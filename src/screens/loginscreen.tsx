@@ -10,18 +10,60 @@ import {
   KeyboardAvoidingView,
   Platform,
   Dimensions,
+  Image,
+  Alert,
 } from 'react-native';
 import {SafeAreaView} from 'react-native-safe-area-context';
 import {Colors} from '../theme/colors';
 import {Fonts} from '../theme/fonts';
 import { useNavigation } from '@react-navigation/native';
+// SVG transformer issues causing crash. Using PNG directly as the SVG was just a wrapper.
+// import PNGLOGO from '../assets/icons/PNGLOGO.svg';
 
-const {width, height} = Dimensions.get('window');
+const {height} = Dimensions.get('window');
 
 const LoginScreen = () => {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
+  const [rememberMe, setRememberMe] = useState(false);
+  const [termsAccepted, setTermsAccepted] = useState(false);
+  
+  // Validation State
+  const [emailError, setEmailError] = useState(false);
+  const [passwordError, setPasswordError] = useState(false);
+  const [termsError, setTermsError] = useState(false);
+
   const navigation = useNavigation();
+
+  const handleLogin = () => {
+      let hasError = false;
+
+      if (!email.trim()) {
+          setEmailError(true);
+          hasError = true;
+      }
+      if (!password.trim()) {
+          setPasswordError(true);
+          hasError = true;
+      }
+      if (!termsAccepted) {
+          setTermsError(true);
+          hasError = true;
+      }
+
+      if (hasError) {
+          // Clear errors after 2 seconds
+          setTimeout(() => {
+              setEmailError(false);
+              setPasswordError(false);
+              setTermsError(false);
+          }, 2000);
+          return;
+      }
+      
+      // Proceed with login logic here (e.g., API call)
+      Alert.alert('Success', 'Logged in successfully!');
+  };
 
   return (
     <View style={styles.container}>
@@ -44,29 +86,35 @@ const LoginScreen = () => {
             showsVerticalScrollIndicator={false}
             contentContainerStyle={styles.scrollContent}>
             
-            {/* Header Content */}
-            <View style={styles.headerContent}>
-              <Text style={styles.welcomeText}>Hello!</Text>
-              <Text style={styles.subWelcomeText}>Welcome to plantland</Text>
-            </View>
+            {/* Header Content Removed */}
+            <View style={styles.logoSpacer} />
 
             {/* Login Form Card */}
             <View style={styles.formCard}>
+              <View style={styles.logoContainer}>
+                 <Image 
+                    source={require('../assets/icons/logo.png')} 
+                    style={styles.logoImage} 
+                />
+              </View>
               <Text style={styles.loginTitle}>Login</Text>
               
               {/* Plant Pot Decoration (absolute positioned) */}
               <View style={styles.plantPotDecoration}>
                  {/* Placeholder for the plant pot image */}
-                 <View style={styles.plantPotCircle} />
+                 
               </View>
 
               <View style={styles.inputContainer}>
                 <TextInput
-                  style={styles.input}
+                  style={[styles.input, emailError ? styles.inputError : undefined]}
                   placeholder="Email"
                   placeholderTextColor={Colors.text.muted}
                   value={email}
-                  onChangeText={setEmail}
+                  onChangeText={(text) => {
+                      setEmail(text);
+                      if (emailError) setEmailError(false);
+                  }}
                   keyboardType="email-address"
                   autoCapitalize="none"
                 />
@@ -74,48 +122,64 @@ const LoginScreen = () => {
 
               <View style={styles.inputContainer}>
                 <TextInput
-                  style={styles.input}
+                  style={[styles.input, passwordError ? styles.inputError : undefined]}
                   placeholder="Password"
                   placeholderTextColor={Colors.text.muted}
                   value={password}
-                  onChangeText={setPassword}
+                  onChangeText={(text) => {
+                      setPassword(text);
+                      if (passwordError) setPasswordError(false);
+                  }}
                   secureTextEntry
                 />
               </View>
 
-              <TouchableOpacity style={styles.forgotPasswordContainer}>
-                <Text style={styles.forgotPasswordText}>Forgot Password</Text>
-              </TouchableOpacity>
+               <View style={styles.optionsContainer}>
+                   <TouchableOpacity onPress={() => setRememberMe(!rememberMe)} activeOpacity={1} style={styles.rememberRow}>
+                         <View style={[styles.checkbox, rememberMe && styles.checkboxChecked]}>
+                             {rememberMe && <Text style={styles.checkboxLabel}>✓</Text>}
+                         </View>
+                         <Text style={styles.optionText}>Remember me</Text>
+                     </TouchableOpacity>
 
-              <TouchableOpacity style={styles.loginButton} onPress={() => {}}>
+                  <TouchableOpacity style={styles.forgotPasswordContainer} onPress={() => navigation.navigate('ForgotPasswordScreen' as never)}>
+                    <Text style={styles.forgotPasswordText}>Forgot Password</Text>
+                  </TouchableOpacity>
+              </View>
+
+              <View style={styles.checkboxContainer}>
+                  <TouchableOpacity 
+                    style={{flexDirection: 'row', alignItems: 'center'}} 
+                    activeOpacity={1}
+                    onPress={() => {
+                        setTermsAccepted(!termsAccepted);
+                        if (termsError) setTermsError(false);
+                    }}
+                  >
+                      <View style={[
+                          styles.checkbox, 
+                          termsAccepted ? styles.checkboxChecked : undefined,
+                          termsError ? styles.checkboxError : undefined // Apply error style
+                      ]}>
+                          {termsAccepted ? <Text style={styles.checkboxLabel}>✓</Text> : null}
+                      </View>
+                      <Text style={[styles.optionText, termsError ? {color: Colors.splash.Lightred} : undefined]}>I agree to </Text>
+                  </TouchableOpacity>
+                  <TouchableOpacity onPress={() => Alert.alert('Terms & Conditions', 'Here are the terms...')}>
+                      <Text style={styles.linkText}>Terms & Conditions</Text>
+                  </TouchableOpacity>
+              </View>
+
+              <TouchableOpacity style={styles.loginButton} onPress={handleLogin}>
                 <Text style={styles.loginButtonText}>Login</Text>
               </TouchableOpacity>
 
-              <View style={styles.dividerContainer}>
-                <View style={styles.dividerLine} />
-                <Text style={styles.dividerText}>Or login with</Text>
-                <View style={styles.dividerLine} />
-              </View>
-
+              
               {/* Social Buttons */}
-              <View style={styles.socialRow}>
-                <TouchableOpacity style={styles.socialButton}>
-                  {/* Icon placeholder */}
-                  <Text style={styles.socialText}>f</Text>
-                </TouchableOpacity>
-                <TouchableOpacity style={styles.socialButton}>
-                   {/* Icon placeholder */}
-                  <Text style={styles.socialText}>G</Text>
-                </TouchableOpacity>
-                <TouchableOpacity style={styles.socialButton}>
-                   {/* Icon placeholder */}
-                  <Text style={styles.socialText}>🍎</Text>
-                </TouchableOpacity>
-              </View>
-
+             
               <View style={styles.signupContainer}>
                 <Text style={styles.signupText}>Don't have account? </Text>
-                <TouchableOpacity>
+                <TouchableOpacity onPress={() => navigation.navigate('SignUpScreen' as never)}>
                   <Text style={styles.signupLink}>Sign Up</Text>
                 </TouchableOpacity>
               </View>
@@ -130,7 +194,7 @@ const LoginScreen = () => {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: Colors.brand.primary, // Using primary brand color as background
+    backgroundColor: Colors.splash.Lightred, // Using dominant color from logo
   },
   safeArea: {
     flex: 1,
@@ -141,7 +205,7 @@ const styles = StyleSheet.create({
     left: 0,
     right: 0,
     height: height * 0.4,
-    backgroundColor: Colors.brand.primary,
+    backgroundColor: Colors.splash.Lightred,
   },
   leafDecoration: {
     // Styling to mimic the leaf shape if using pure CSS, or just a place for an image
@@ -197,10 +261,14 @@ const styles = StyleSheet.create({
     shadowRadius: 10,
     elevation: 20,
   },
+  logoContainer: {
+    alignItems: 'flex-start',
+    marginBottom: 10,
+  },
   loginTitle: {
     fontFamily: Fonts.Inter?.boldHeading || 'System',
     fontSize: 32,
-    color: Colors.brand.primary,
+    color: '#000000',
     marginBottom: 30,
     textAlign: 'left',
     fontWeight: '700',
@@ -233,18 +301,80 @@ const styles = StyleSheet.create({
     color: Colors.text.primary,
     fontFamily: Fonts.Inter?.regular || 'System',
   },
+  inputError: {
+      borderWidth: 1,
+      borderColor: Colors.splash.Lightred,
+  },
+  optionsContainer: {
+      flexDirection: 'row',
+      justifyContent: 'space-between',
+      alignItems: 'center',
+      marginBottom: 20,
+  },
+  checkboxContainer: {
+      flexDirection: 'row',
+      alignItems: 'center',
+      marginBottom: 10,
+  },
+  checkbox: {
+      width: 20,
+      height: 20,
+      borderWidth: 1,
+      borderColor: Colors.ui.borderLight || '#E0E0E0',
+      borderRadius: 5,
+      marginRight: 10,
+      justifyContent: 'center',
+      alignItems: 'center',
+  },
+  checkboxChecked: {
+      backgroundColor: Colors.splash.Lightred,
+      borderColor: Colors.splash.Lightred,
+  },
+  checkboxError: {
+      borderWidth: 1,
+      borderColor: Colors.splash.Lightred,
+      backgroundColor: '#FFEBEE', // Light red background
+  },
+  checkboxLabel: {
+      color: '#fff',
+      fontSize: 12,
+      fontWeight: 'bold',
+  },
+  optionText: {
+      color: Colors.text.secondary,
+      fontSize: 14,
+      fontFamily: Fonts.Inter?.regular || 'System',
+  },
+  logoSpacer: {
+    height: 100,
+  },
+  logoImage: {
+    width: 120, 
+    height: 60, 
+    resizeMode: 'contain',
+  },
+  rememberRow: {
+    flexDirection: 'row', 
+    alignItems: 'center',
+  },
+  linkText: {
+      color: Colors.splash.Lightred,
+      fontSize: 14,
+      fontFamily: Fonts.Inter?.boldHeading || 'System',
+      fontWeight: 'bold',
+      textDecorationLine: 'underline',
+  },
   forgotPasswordContainer: {
-    alignItems: 'flex-end',
-    marginBottom: 30,
+    // Moved styles to be inline with options or adjust here
   },
   forgotPasswordText: {
-    color: Colors.brand.primary,
+    color: Colors.splash.Lightred,
     fontSize: 12,
     fontFamily: Fonts.Inter?.regular || 'System',
     fontWeight: '500',
   },
   loginButton: {
-    backgroundColor: Colors.brand.primary,
+    backgroundColor: Colors.splash.Lightred,
     borderRadius: 25,
     paddingVertical: 16,
     alignItems: 'center',
@@ -308,6 +438,7 @@ const styles = StyleSheet.create({
   signupContainer: {
     flexDirection: 'row',
     justifyContent: 'center',
+    marginTop: 20,
   },
   signupText: {
     color: Colors.text.secondary,
@@ -315,7 +446,7 @@ const styles = StyleSheet.create({
     fontFamily: Fonts.Inter?.regular || 'System',
   },
   signupLink: {
-    color: Colors.brand.primary,
+    color: Colors.splash.Lightred,
     fontSize: 14,
     fontWeight: 'bold',
     fontFamily: Fonts.Inter?.boldHeading || 'System',
