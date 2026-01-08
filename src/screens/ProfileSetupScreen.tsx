@@ -12,6 +12,9 @@ import {
   Dimensions,
   Image,
 } from 'react-native';
+import {launchImageLibrary} from 'react-native-image-picker';
+import DatePicker from 'react-native-date-picker';
+import Icon from 'react-native-vector-icons/MaterialIcons';
 import {SafeAreaView} from 'react-native-safe-area-context';
 import {Colors} from '../theme/colors';
 import {Fonts} from '../theme/fonts';
@@ -30,7 +33,11 @@ const ProfileSetupScreen = () => {
   const [phone, setPhone] = useState('');
   const [countryCode, setCountryCode] = useState('+91');
   
+  const [profileImage, setProfileImage] = useState<string | null>(null);
+  
   const [dob, setDob] = useState('');
+  const [date, setDate] = useState(new Date());
+  const [openDatePicker, setOpenDatePicker] = useState(false);
   const [gender, setGender] = useState('Male');
   
   // Address
@@ -43,6 +50,17 @@ const ProfileSetupScreen = () => {
   
   // Preferences
   const [language, setLanguage] = useState('English');
+
+  const handleImageSelection = async () => {
+    const result = await launchImageLibrary({
+      mediaType: 'photo',
+      selectionLimit: 1,
+    });
+
+    if (result.assets && result.assets.length > 0 && result.assets[0].uri) {
+      setProfileImage(result.assets[0].uri);
+    }
+  };
 
   return (
     <View style={styles.container}>
@@ -76,12 +94,15 @@ const ProfileSetupScreen = () => {
             contentContainerStyle={styles.scrollContent}>
             
             {/* Avatar Placeholder */}
-            <TouchableOpacity style={styles.avatarContainer}>
+            <TouchableOpacity style={styles.avatarContainer} onPress={handleImageSelection}>
                 <View style={styles.avatarCircle}>
-                    {/* Placeholder for Upload Icon */}
-                    <Text style={styles.avatarIcon}>📷</Text>
+                    {profileImage ? (
+                      <Image source={{uri: profileImage}} style={styles.avatarImage} />
+                    ) : (
+                      <Icon name="camera-alt" size={40} color={Colors.splash.Lightred} />
+                    )}
                 </View>
-                <Text style={styles.avatarLabel}>Upload Profile Picture</Text>
+                <Text style={styles.avatarLabel}>{profileImage ? 'Change Profile Picture' : 'Upload Profile Picture'}</Text>
             </TouchableOpacity>
 
             {/* Form Section */}
@@ -163,12 +184,27 @@ const ProfileSetupScreen = () => {
 
                 <View style={styles.inputWrapper}>
                      <Text style={styles.label}>Date of Birth</Text>
-                     <TouchableOpacity style={styles.datePickerButton} onPress={() => {/* Show DatePicker */}}>
+                     <TouchableOpacity style={styles.datePickerButton} onPress={() => setOpenDatePicker(true)}>
                         <Text style={dob ? styles.dateText : styles.placeholderText}>
                             {dob || 'DD / MM / YYYY'}
                         </Text>
-                        <Text style={styles.calendarIcon}>📅</Text>
+                        <Icon name="calendar-today" size={20} color={Colors.text.muted} />
                      </TouchableOpacity>
+                     
+                     <DatePicker
+                        modal
+                        open={openDatePicker}
+                        date={date}
+                        mode="date"
+                        onConfirm={(selectedDate) => {
+                          setOpenDatePicker(false);
+                          setDate(selectedDate);
+                          setDob(selectedDate.toLocaleDateString('en-GB')); // DD/MM/YYYY format
+                        }}
+                        onCancel={() => {
+                          setOpenDatePicker(false);
+                        }}
+                      />
                 </View>
 
                 <View style={styles.inputWrapper}>
@@ -355,6 +391,11 @@ const styles = StyleSheet.create({
       shadowRadius: 5,
       elevation: 8,
       overflow: 'hidden',
+  },
+  avatarImage: {
+    width: '100%',
+    height: '100%',
+    resizeMode: 'cover',
   },
   avatarText: {
       fontSize: 40,
