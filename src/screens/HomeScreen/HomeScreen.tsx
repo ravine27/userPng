@@ -23,21 +23,36 @@ const HomeScreen = () => {
     const [modalVisible, setModalVisible] = useState(false);
     const [activeRide, setActiveRide] = useState<ActiveRideData | null>(null);
 
+    // Animation for profile screen slide-in from left
+    const profileSlideAnim = useRef(new Animated.Value(-width)).current;
+
     const handleGoPress = () => {
         setModalVisible(true);
     };
+
     const handleProfilePress = () => {
         console.log('Profile Header Pressed!');
-        // Alert.alert("Debug", "Profile Pressed"); // Uncomment if console logs not visible
         setShowProfileScreen(true);
+        // Slide in from left
+        Animated.spring(profileSlideAnim, {
+            toValue: 0,
+            useNativeDriver: true,
+            friction: 9,
+            tension: 50,
+        }).start();
     };
 
-    // ... logic ...
-
-    // DEBUG: Conditional Render without animation first to verify it works
-    if (showProfileScreen) {
-        return <ProfileScreen onBack={() => setShowProfileScreen(false)} />;
-    }
+    const handleProfileBack = () => {
+        // Slide out to left
+        Animated.spring(profileSlideAnim, {
+            toValue: -width,
+            useNativeDriver: true,
+            friction: 9,
+            tension: 50,
+        }).start(() => {
+            setShowProfileScreen(false);
+        });
+    };
 
 
 
@@ -138,7 +153,19 @@ const HomeScreen = () => {
                 onClose={() => setShowNotifications(false)}
             />
 
-            {/* Animated Profile Overlay temporarily removed for debugging */}
+            {/* Animated Profile Overlay */}
+            {showProfileScreen && (
+                <Animated.View
+                    style={[
+                        styles.profileOverlay,
+                        {
+                            transform: [{ translateX: profileSlideAnim }]
+                        }
+                    ]}
+                >
+                    <ProfileScreen onBack={handleProfileBack} />
+                </Animated.View>
+            )}
         </View>
     );
 };

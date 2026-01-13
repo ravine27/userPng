@@ -41,7 +41,7 @@ const ActiveRideCard: React.FC<ActiveRideCardProps> = ({ data, onViewDetails, on
                 <View style={styles.header}>
                     <View style={styles.headerLeft}>
                         <View style={styles.carIconCircle}>
-                            <Icon name="car-sport" size={22} color="#FFFFFF" />
+                            <Icon name="car-sport" size={22} color="#9B8B7E" />
                         </View>
                         <View>
                             <Text style={styles.dateTimeText}>{data.date}</Text>
@@ -94,11 +94,11 @@ const ActiveRideCard: React.FC<ActiveRideCardProps> = ({ data, onViewDetails, on
                 {/* Ride Details */}
                 <View style={styles.detailsRow}>
                     <View style={styles.detailItem}>
-                        <Icon name="people" size={16} color="#FFFFFF" />
+                        <Icon name="people" size={16} color="#9B8B7E" />
                         <Text style={styles.detailText}>{data.seats}</Text>
                     </View>
                     <View style={styles.detailItem}>
-                        <Icon name="car" size={16} color="#FFFFFF" />
+                        <Icon name="car" size={16} color="#9B8B7E" />
                         <Text style={styles.detailText}>{data.vehicle}</Text>
                     </View>
                 </View>
@@ -174,7 +174,7 @@ const styles = StyleSheet.create({
         width: 44,
         height: 44,
         borderRadius: 18,
-        backgroundColor: '#C62829',
+        backgroundColor: '#FFF8ED',
         justifyContent: 'center',
         alignItems: 'center',
         marginRight: 12,
@@ -249,7 +249,7 @@ const styles = StyleSheet.create({
         flexDirection: 'row',
         alignItems: 'center',
         marginRight: 20,
-        backgroundColor: '#C62829',
+        backgroundColor: '#FFF8ED',
         paddingHorizontal: 14,
         paddingVertical: 8,
         borderRadius: 14,
@@ -258,7 +258,7 @@ const styles = StyleSheet.create({
     detailText: {
         fontFamily: Fonts.Inter.medium,
         fontSize: 13,
-        color: '#FFFFFF',
+        color: '#4A3F35',
     },
     otpContainer: {
         backgroundColor: 'rgba(249, 244, 234, 0.7)',

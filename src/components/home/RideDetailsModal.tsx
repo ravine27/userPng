@@ -40,7 +40,7 @@ const RideDetailsModal: React.FC<RideDetailsModalProps> = ({ visible, onClose, r
                     <View style={styles.header}>
                         <View style={styles.headerLeft}>
                             <View style={styles.headerIconBox}>
-                                <Icon name="car-sport" size={24} color="#C62829" />
+                                <Icon name="car-sport" size={24} color="#FF0000" />
                             </View>
                             <View>
                                 <Text style={styles.headerTitle}>Ride Request Details</Text>
@@ -101,26 +101,26 @@ const RideDetailsModal: React.FC<RideDetailsModalProps> = ({ visible, onClose, r
                         {/* Details Grid */}
                         <View style={styles.gridContainer}>
                             <View style={styles.gridRow}>
-                                <View style={[styles.gridCard, { backgroundColor: '#da5050ff' }]}>
-                                    <Icon name="calendar" size={28} color="#FFFFFF" />
+                                <View style={styles.gridCard}>
+                                    <Icon name="calendar" size={28} color="#D14D72" />
                                     <Text style={styles.gridLabel}>Date</Text>
                                     <Text style={styles.gridValue}>{rideData.date}</Text>
                                 </View>
-                                <View style={[styles.gridCard, { backgroundColor: '#da5050ff' }]}>
-                                    <Icon name="time" size={28} color="#FFFFFF" />
+                                <View style={styles.gridCard}>
+                                    <Icon name="time" size={28} color="#D14D72" />
                                     <Text style={styles.gridLabel}>Time</Text>
                                     <Text style={styles.gridValue}>{rideData.time}</Text>
                                 </View>
                             </View>
 
                             <View style={styles.gridRow}>
-                                <View style={[styles.gridCard, { backgroundColor: '#da5050ff' }]}>
-                                    <Icon name="people" size={28} color="#FFFFFF" />
+                                <View style={styles.gridCard}>
+                                    <Icon name="people" size={28} color="#D14D72" />
                                     <Text style={styles.gridLabel}>Seats</Text>
                                     <Text style={styles.gridValue}>{rideData.seats}</Text>
                                 </View>
-                                <View style={[styles.gridCard, { backgroundColor: '#da5050ff' }]}>
-                                    <Icon name="car-sport" size={28} color="#FFFFFF" />
+                                <View style={styles.gridCard}>
+                                    <Icon name="car-sport" size={28} color="#D14D72" />
                                     <Text style={styles.gridLabel}>Vehicle</Text>
                                     <Text style={styles.gridValue}>{rideData.vehicle}</Text>
                                 </View>
@@ -149,7 +149,7 @@ const RideDetailsModal: React.FC<RideDetailsModalProps> = ({ visible, onClose, r
                                 <View style={styles.assignmentCard}>
                                     <View style={styles.assignmentItem}>
                                         <View style={styles.assignmentIconBox}>
-                                            <Icon name="person" size={22} color="#FFFFFF" />
+                                            <Icon name="person" size={22} color="#D14D72" />
                                         </View>
                                         <View>
                                             <Text style={styles.assignmentLabel}>YOUR DRIVER</Text>
@@ -161,7 +161,7 @@ const RideDetailsModal: React.FC<RideDetailsModalProps> = ({ visible, onClose, r
                                 <View style={styles.assignmentCard}>
                                     <View style={styles.assignmentItem}>
                                         <View style={styles.assignmentIconBox}>
-                                            <Icon name="car" size={22} color="#FFFFFF" />
+                                            <Icon name="car" size={22} color="#D14D72" />
                                         </View>
                                         <View>
                                             <Text style={styles.assignmentLabel}>YOUR VEHICLE</Text>
@@ -378,18 +378,19 @@ const styles = StyleSheet.create({
         padding: 16,
         borderRadius: 18,
         alignItems: 'center',
+        backgroundColor: '#FFE5E5',
     },
     gridLabel: {
         fontFamily: Fonts.Inter.medium,
         fontSize: 11,
-        color: 'rgba(255, 255, 255, 0.8)',
+        color: '#B8405E',
         marginTop: 8,
         marginBottom: 4,
     },
     gridValue: {
         fontFamily: Fonts.Inter.boldHeading,
         fontSize: 14,
-        color: '#FFFFFF',
+        color: '#4A3F35',
     },
     purposeCard: {
         flexDirection: 'row',
@@ -420,7 +421,7 @@ const styles = StyleSheet.create({
         marginBottom: 12,
     },
     assignmentCard: {
-        backgroundColor: '#da5050ff',
+        backgroundColor: '#FFE5E5',
         borderRadius: 20,
         padding: 18,
     },
@@ -432,29 +433,29 @@ const styles = StyleSheet.create({
         width: 48,
         height: 48,
         borderRadius: 16,
-        backgroundColor: '#da5050ff',
+        backgroundColor: '#FFFFFF',
         justifyContent: 'center',
         alignItems: 'center',
         marginRight: 14,
         borderWidth: 1,
-        borderColor: 'rgba(255, 255, 255, 0.2)',
+        borderColor: '#E8C9B3',
     },
     assignmentLabel: {
         fontFamily: Fonts.Inter.boldHeading,
         fontSize: 10,
-        color: 'rgba(255, 255, 255, 0.8)',
+        color: '#B8405E',
         letterSpacing: 0.5,
         marginBottom: 4,
     },
     assignmentValue: {
         fontFamily: Fonts.Inter.boldHeading,
         fontSize: 15,
-        color: '#FFFFFF',
+        color: '#4A3F35',
     },
     assignmentSubtext: {
         fontFamily: Fonts.Inter.regular,
         fontSize: 12,
-        color: 'rgba(255, 255, 255, 0.8)',
+        color: '#6B5F52',
         marginTop: 2,
     },
     assignmentDivider: {
