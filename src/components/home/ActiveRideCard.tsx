@@ -41,7 +41,7 @@ const ActiveRideCard: React.FC<ActiveRideCardProps> = ({ data, onViewDetails, on
                 <View style={styles.header}>
                     <View style={styles.headerLeft}>
                         <View style={styles.carIconCircle}>
-                            <Icon name="car-sport" size={22} color="#9B8B7E" />
+                            <Icon name="car-sport" size={22} color="#FF0000" />
                         </View>
                         <View>
                             <Text style={styles.dateTimeText}>{data.date}</Text>
