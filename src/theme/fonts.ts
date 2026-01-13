@@ -29,7 +29,8 @@ export const Fonts = {
   Inter: {
     heading: "Inter_18pt-Black",
     boldHeading: "Inter_18pt-Bold",
-    regular: "Inter_24pt-Regular"
+    regular: "Inter_24pt-Regular",
+    medium: "Inter_24pt-Regular",
   },
   open_sans: {
     heading: "OpenSans_Condensed-Bold",

@@ -1,11 +1,14 @@
 import React from 'react';
-import {SafeAreaProvider} from 'react-native-safe-area-context';
+import { SafeAreaProvider } from 'react-native-safe-area-context';
 import RootNavigator from './src/navigation';
+import { ProfileProvider } from './src/context/ProfileContext';
 
 function App() {
   return (
     <SafeAreaProvider>
-      <RootNavigator />
+      <ProfileProvider>
+        <RootNavigator />
+      </ProfileProvider>
     </SafeAreaProvider>
   );
 }

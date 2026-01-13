@@ -1,6 +1,6 @@
 export const Colors = {
   brand: {
-    primary: '#a65e36',
+    primary: '#C62829',
     accent: '#f9f4ea',
     gradientEnd: '#DBC9A6',
     lighter: '#e8c9b3',

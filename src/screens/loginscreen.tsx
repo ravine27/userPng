@@ -91,19 +91,11 @@ const LoginScreen = () => {
 
             {/* Login Form Card */}
             <View style={styles.formCard}>
-              <View style={styles.logoContainer}>
-                 <Image 
-                    source={require('../assets/icons/logo.png')} 
-                    style={styles.logoImage} 
-                />
-              </View>
+   
               <Text style={styles.loginTitle}>Login</Text>
               
-              {/* Plant Pot Decoration (absolute positioned) */}
-              <View style={styles.plantPotDecoration}>
-                 {/* Placeholder for the plant pot image */}
-                 
-              </View>
+  
+             
 
               <View style={styles.inputContainer}>
                 <TextInput
@@ -177,12 +169,7 @@ const LoginScreen = () => {
               
               {/* Social Buttons */}
              
-              <View style={styles.signupContainer}>
-                <Text style={styles.signupText}>Don't have account? </Text>
-                <TouchableOpacity onPress={() => navigation.navigate('SignUpScreen' as never)}>
-                  <Text style={styles.signupLink}>Sign Up</Text>
-                </TouchableOpacity>
-              </View>
+              
             </View>
           </ScrollView>
         </KeyboardAvoidingView>
