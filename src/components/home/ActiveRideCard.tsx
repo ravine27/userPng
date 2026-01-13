@@ -41,16 +41,23 @@ const ActiveRideCard: React.FC<ActiveRideCardProps> = ({ data, onViewDetails, on
                 <View style={styles.header}>
                     <View style={styles.headerLeft}>
                         <View style={styles.carIconCircle}>
-                            <Icon name="car-sport" size={22} color="#C62829" />
+                            <Icon name="car-sport" size={22} color="#FFFFFF" />
                         </View>
                         <View>
                             <Text style={styles.dateTimeText}>{data.date}</Text>
                             <Text style={styles.dateTimeText}>{data.time}</Text>
                         </View>
                     </View>
-                    <View style={styles.badge}>
-                        <Icon name="checkmark-circle" size={14} color="#4CAF50" style={{ marginRight: 4 }} />
-                        <Text style={styles.badgeText}>Approved</Text>
+                    <View style={[styles.badge, (data.status === 'Pending' || !data.status) && { backgroundColor: '#FFF3E0' }]}>
+                        <Icon
+                            name={data.status === 'Approved' ? "checkmark-circle" : "time"}
+                            size={14}
+                            color={data.status === 'Approved' ? "#4CAF50" : "#FF9800"}
+                            style={{ marginRight: 4 }}
+                        />
+                        <Text style={[styles.badgeText, (data.status === 'Pending' || !data.status) && { color: '#FF9800' }]}>
+                            {data.status || 'Pending'}
+                        </Text>
                     </View>
                 </View>
 
@@ -87,11 +94,11 @@ const ActiveRideCard: React.FC<ActiveRideCardProps> = ({ data, onViewDetails, on
                 {/* Ride Details */}
                 <View style={styles.detailsRow}>
                     <View style={styles.detailItem}>
-                        <Icon name="people" size={16} color="#6B5F52" />
+                        <Icon name="people" size={16} color="#FFFFFF" />
                         <Text style={styles.detailText}>{data.seats}</Text>
                     </View>
                     <View style={styles.detailItem}>
-                        <Icon name="car" size={16} color="#6B5F52" />
+                        <Icon name="car" size={16} color="#FFFFFF" />
                         <Text style={styles.detailText}>{data.vehicle}</Text>
                     </View>
                 </View>
@@ -142,7 +149,7 @@ const styles = StyleSheet.create({
     card: {
         backgroundColor: '#FFFFFF',
         borderRadius: 30,
-        padding: 24,
+        padding: 20,
         marginVertical: Spacing.md,
         marginHorizontal: Spacing.md,
         shadowColor: "#DBC9A6",
@@ -157,7 +164,7 @@ const styles = StyleSheet.create({
         flexDirection: 'row',
         justifyContent: 'space-between',
         alignItems: 'center',
-        marginBottom: 24,
+        marginBottom: 20,
     },
     headerLeft: {
         flexDirection: 'row',
@@ -167,7 +174,7 @@ const styles = StyleSheet.create({
         width: 44,
         height: 44,
         borderRadius: 18,
-        backgroundColor: '#FFF8ED',
+        backgroundColor: '#C62829',
         justifyContent: 'center',
         alignItems: 'center',
         marginRight: 12,
@@ -242,7 +249,7 @@ const styles = StyleSheet.create({
         flexDirection: 'row',
         alignItems: 'center',
         marginRight: 20,
-        backgroundColor: '#FFF8ED',
+        backgroundColor: '#C62829',
         paddingHorizontal: 14,
         paddingVertical: 8,
         borderRadius: 14,
@@ -251,7 +258,7 @@ const styles = StyleSheet.create({
     detailText: {
         fontFamily: Fonts.Inter.medium,
         fontSize: 13,
-        color: '#6B5F52',
+        color: '#FFFFFF',
     },
     otpContainer: {
         backgroundColor: 'rgba(249, 244, 234, 0.7)',

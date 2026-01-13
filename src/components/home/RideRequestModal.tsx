@@ -29,7 +29,7 @@ const RideRequestModal: React.FC<RideRequestModalProps> = ({ visible, onClose, o
     const [dropoffLocation, setDropoffLocation] = useState('');
     const [date, setDate] = useState('dd-mm-yyyy');
     const [time, setTime] = useState('--:-- --');
-    const [seats, setSeats] = useState('4 Seat');
+    const [seats, setSeats] = useState('5 Seats');
     const [vehicleType, setVehicleType] = useState('Select type');
     const [purpose, setPurpose] = useState('');
     const [notes, setNotes] = useState('');
@@ -42,7 +42,7 @@ const RideRequestModal: React.FC<RideRequestModalProps> = ({ visible, onClose, o
     const [showTimePicker, setShowTimePicker] = useState(false);
 
     const vehicleOptions = ['Select type', 'Sedan', 'SUV'];
-    const seatsOptions = ['4', '5', '6', '7'];
+    const seatsOptions = ['5', '6', '7'];
 
     const handleSendRequest = () => {
         const requestData = {
@@ -193,17 +193,17 @@ const RideRequestModal: React.FC<RideRequestModalProps> = ({ visible, onClose, o
                                                     key={index}
                                                     style={styles.dropdownOption}
                                                     onPress={() => {
-                                                        setSeats(option + ' Seat');
+                                                        setSeats(option + ' Seats');
                                                         setShowSeatsDropdown(false);
                                                     }}
                                                 >
                                                     <Text style={[
                                                         styles.dropdownOptionText,
-                                                        seats === option + ' Seat' && styles.selectedOptionText
+                                                        seats === option + ' Seats' && styles.selectedOptionText
                                                     ]}>
-                                                        {option} Seat
+                                                        {option} Seats
                                                     </Text>
-                                                    {seats === option + ' Seat' && (
+                                                    {seats === option + ' Seats' && (
                                                         <Icon name="checkmark" size={18} color="#C62829" />
                                                     )}
                                                 </TouchableOpacity>

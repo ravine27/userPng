@@ -1,28 +1,48 @@
-import React, { useState } from 'react';
-import { View, StyleSheet, ScrollView, StatusBar, Text, Dimensions } from 'react-native';
+import React, { useState, useRef, useEffect } from 'react';
+import { View, StyleSheet, ScrollView, StatusBar, Text, Dimensions, Animated, Easing, Alert } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { Colors } from '../../theme/colors';
 import { Fonts } from '../../theme/fonts';
+import { useProfile } from '../../context/ProfileContext';
 import ProfileHeader from '../../components/home/ProfileHeader';
 import BookRideCard from '../../components/home/BookRideCard';
 import RideRequestModal from '../../components/home/RideRequestModal';
 import ActiveRideCard, { ActiveRideData } from '../../components/home/ActiveRideCard';
 import RideTrackingScreen from '../RideTracking/RideTrackingScreen';
 import ProfileScreen from '../ProfileScreen/ProfileScreen';
+import NotificationsModal from '../../components/home/NotificationsModal';
+
 
 const { width } = Dimensions.get('window');
 
 const HomeScreen = () => {
+    const { profile } = useProfile();
+    const [showProfileScreen, setShowProfileScreen] = useState(false);
+    const [showNotifications, setShowNotifications] = useState(false);
+    const [showTrackingScreen, setShowTrackingScreen] = useState(false);
     const [modalVisible, setModalVisible] = useState(false);
     const [activeRide, setActiveRide] = useState<ActiveRideData | null>(null);
-    const [showTrackingScreen, setShowTrackingScreen] = useState(false);
-    const [showProfileScreen, setShowProfileScreen] = useState(false);
 
     const handleGoPress = () => {
         setModalVisible(true);
     };
+    const handleProfilePress = () => {
+        console.log('Profile Header Pressed!');
+        // Alert.alert("Debug", "Profile Pressed"); // Uncomment if console logs not visible
+        setShowProfileScreen(true);
+    };
+
+    // ... logic ...
+
+    // DEBUG: Conditional Render without animation first to verify it works
+    if (showProfileScreen) {
+        return <ProfileScreen onBack={() => setShowProfileScreen(false)} />;
+    }
+
+
 
     const handleRideSubmit = (data: any) => {
+        // ... (existing logic)
         const otp = Math.floor(100000 + Math.random() * 900000).toString();
 
         setActiveRide({
@@ -34,16 +54,11 @@ const HomeScreen = () => {
             vehicle: data.vehicle,
             purpose: data.purpose,
             otp: otp,
-            status: 'Approved'
+            status: 'Pending'
         });
     };
 
-    // If profile screen is showing, display it
-    if (showProfileScreen) {
-        return <ProfileScreen onBack={() => setShowProfileScreen(false)} />;
-    }
-
-    // If tracking screen is showing, display it instead
+    // If tracking screen is showing, display it instead (Tracking still replaces screen)
     if (showTrackingScreen) {
         return <RideTrackingScreen onBack={() => setShowTrackingScreen(false)} />;
     }
@@ -59,7 +74,10 @@ const HomeScreen = () => {
 
             <SafeAreaView style={styles.safeArea}>
                 <View style={styles.header}>
-                    <ProfileHeader onProfilePress={() => setShowProfileScreen(true)} />
+                    <ProfileHeader
+                        onProfilePress={handleProfilePress}
+                        onNotificationPress={() => setShowNotifications(true)}
+                    />
                 </View>
 
                 <ScrollView contentContainerStyle={styles.content} showsVerticalScrollIndicator={false}>
@@ -73,26 +91,24 @@ const HomeScreen = () => {
                             {new Date().getHours() < 12 ? 'Good Morning' :
                                 new Date().getHours() < 18 ? 'Good Afternoon' : 'Good Evening'}
                         </Text>
-                        <Text style={styles.userNameText}>John.</Text>
+                        <Text style={styles.userNameText}>{profile?.firstName || 'User'}.</Text>
                     </View>
 
                     {/* Book a Ride Card */}
                     <BookRideCard onGoPress={handleGoPress} />
 
-                    <View style={styles.spacer} />
-
-                    {/* Permanent Dummy Active Ride Card */}
+                    {/* Active Ride Card (Permanent Dummy) */}
                     <ActiveRideCard
                         data={{
                             pickup: 'Swargate, Pune',
                             dropoff: 'Baner, Pune',
                             date: '12-01-2026',
                             time: '11:27 PM',
-                            seats: '3 Seats',
-                            vehicle: 'Luxury',
+                            seats: '5 Seats',
+                            vehicle: 'Sedan',
                             purpose: 'Office Drop',
                             otp: '854768',
-                            status: 'Approved'
+                            status: 'Pending'
                         }}
                         onViewDetails={() => console.log('View Details')}
                         onTrackRide={() => setShowTrackingScreen(true)}
@@ -106,17 +122,28 @@ const HomeScreen = () => {
                             onTrackRide={() => setShowTrackingScreen(true)}
                         />
                     )}
-                </ScrollView>
 
-                <RideRequestModal
-                    visible={modalVisible}
-                    onClose={() => setModalVisible(false)}
-                    onSubmit={handleRideSubmit}
-                />
+                </ScrollView>
             </SafeAreaView>
+
+            {/* Modals */}
+            <RideRequestModal
+                visible={modalVisible}
+                onClose={() => setModalVisible(false)}
+                onSubmit={handleRideSubmit}
+            />
+
+            <NotificationsModal
+                visible={showNotifications}
+                onClose={() => setShowNotifications(false)}
+            />
+
+            {/* Animated Profile Overlay temporarily removed for debugging */}
         </View>
     );
 };
+
+
 
 const styles = StyleSheet.create({
     container: {
@@ -162,13 +189,11 @@ const styles = StyleSheet.create({
         flexGrow: 1,
         paddingBottom: 40,
     },
-    spacer: {
-        height: 20,
-    },
+
     greetingContainer: {
         paddingHorizontal: 28,
-        marginTop: 20,
-        marginBottom: 24,
+        marginTop: 8,
+        marginBottom: 10,
     },
     greetingSub: {
         fontFamily: Fonts.Inter.medium,
@@ -188,6 +213,16 @@ const styles = StyleSheet.create({
         fontSize: 32,
         color: '#C62829', // Brand primary red
         marginTop: -5,
+    },
+    profileOverlay: {
+        position: 'absolute',
+        top: 0,
+        left: 0,
+        bottom: 0,
+        width: width,
+        backgroundColor: '#f9f4ea',
+        zIndex: 1000,
+        elevation: 20, // For Android
     },
 });
 

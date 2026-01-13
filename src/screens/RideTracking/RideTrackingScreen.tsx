@@ -154,11 +154,6 @@ const RideTrackingScreen: React.FC<RideTrackingScreenProps> = ({ onBack }) => {
                     <TouchableOpacity style={styles.backButton} onPress={onBack}>
                         <Icon name="arrow-back" size={24} color="#4A3F35" />
                     </TouchableOpacity>
-
-                    <TouchableOpacity style={styles.sosButton}>
-                        <Icon name="warning" size={20} color="#FFFFFF" />
-                        <Text style={styles.sosText}>SOS</Text>
-                    </TouchableOpacity>
                 </SafeAreaView>
 
                 {/* Location Markers */}
@@ -262,11 +257,7 @@ const RideTrackingScreen: React.FC<RideTrackingScreenProps> = ({ onBack }) => {
                         </View>
                     </View>
 
-                    {/* End Ride Button */}
-                    <TouchableOpacity style={styles.endRideButton}>
-                        <Icon name="stop-circle" size={22} color="#FFFFFF" style={{ marginRight: 8 }} />
-                        <Text style={styles.endRideText}>END RIDE</Text>
-                    </TouchableOpacity>
+
 
                     <View style={{ height: 20 }} />
                 </ScrollView>
@@ -369,25 +360,7 @@ const styles = StyleSheet.create({
         shadowRadius: 8,
         elevation: 4,
     },
-    sosButton: {
-        flexDirection: 'row',
-        alignItems: 'center',
-        backgroundColor: '#C62829',
-        paddingHorizontal: 16,
-        paddingVertical: 10,
-        borderRadius: 22,
-        gap: 6,
-        shadowColor: '#C62829',
-        shadowOffset: { width: 0, height: 4 },
-        shadowOpacity: 0.3,
-        shadowRadius: 8,
-        elevation: 4,
-    },
-    sosText: {
-        fontFamily: Fonts.Inter.boldHeading,
-        fontSize: 14,
-        color: '#FFFFFF',
-    },
+
     pickupMarker: {
         position: 'absolute',
         alignItems: 'center',
@@ -624,25 +597,7 @@ const styles = StyleSheet.create({
         fontSize: 20,
         color: '#C62829',
     },
-    endRideButton: {
-        flexDirection: 'row',
-        backgroundColor: '#C62829',
-        paddingVertical: 18,
-        borderRadius: 18,
-        alignItems: 'center',
-        justifyContent: 'center',
-        shadowColor: '#C62829',
-        shadowOffset: { width: 0, height: 8 },
-        shadowOpacity: 0.4,
-        shadowRadius: 12,
-        elevation: 8,
-    },
-    endRideText: {
-        fontFamily: Fonts.Inter.boldHeading,
-        fontSize: 16,
-        color: '#FFFFFF',
-        letterSpacing: 1,
-    },
+
 });
 
 export default RideTrackingScreen;

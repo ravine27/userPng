@@ -127,28 +127,38 @@ const ProfileScreen: React.FC<ProfileScreenProps> = ({ onBack }) => {
         <View style={styles.container}>
             <StatusBar barStyle="light-content" backgroundColor="#C62829" />
 
+            {/* Aesthetic Warm Ambient Background Circles */}
+            <View style={styles.ambientCircleTop} />
+            <View style={styles.ambientCircleBottom} />
+            <View style={styles.ambientCircleMiddle} />
+
             {/* Red Header */}
             <View style={styles.header}>
                 <TouchableOpacity style={styles.backButton} onPress={onBack}>
                     <Icon name="arrow-back" size={24} color="#FFFFFF" />
                 </TouchableOpacity>
-                <Text style={styles.headerTitle}>Profile Setup</Text>
+                <Text style={styles.headerTitle}>Profile</Text>
                 <View style={styles.placeholder} />
             </View>
 
             <ScrollView style={styles.scrollContainer} showsVerticalScrollIndicator={false}>
-                {/* Profile Picture Section */}
-                <View style={styles.profileSection}>
+                {/* Profile Picture Section - Redesigned as Card */}
+                <View style={styles.profileCard}>
+                    {/* Decorative Glare/Glow Effects */}
+                    <View style={styles.glowEffect1} />
+                    <View style={styles.glowEffect2} />
+                    <View style={styles.patternOverlay} />
+
                     <View style={styles.profileImageContainer}>
                         {profileImage ? (
                             <Image source={{ uri: profileImage }} style={styles.profileImagePic} />
                         ) : (
                             <View style={styles.profileImage}>
-                                <Icon name="person" size={50} color="#C62829" />
+                                <Icon name="person" size={50} color="#FFFFFF" />
                             </View>
                         )}
                         <TouchableOpacity style={styles.cameraButton} onPress={handleImagePick}>
-                            <Icon name="camera" size={20} color="#FFFFFF" />
+                            <Icon name="camera" size={20} color="#C62829" />
                         </TouchableOpacity>
                     </View>
                     <Text style={styles.uploadText}>Upload Profile Picture</Text>
@@ -386,6 +396,35 @@ const styles = StyleSheet.create({
         flex: 1,
         backgroundColor: '#f9f4ea',
     },
+    // Aesthetic Warm Ambient Circles
+    ambientCircleTop: {
+        position: 'absolute',
+        top: -120,
+        right: -100,
+        width: 320,
+        height: 320,
+        borderRadius: 160,
+        backgroundColor: 'rgba(219, 201, 166, 0.3)',
+        transform: [{ scale: 1.5 }],
+    },
+    ambientCircleBottom: {
+        position: 'absolute',
+        bottom: -80,
+        left: -60,
+        width: 380,
+        height: 380,
+        borderRadius: 190,
+        backgroundColor: 'rgba(232, 201, 179, 0.35)',
+    },
+    ambientCircleMiddle: {
+        position: 'absolute',
+        top: '40%',
+        left: -100,
+        width: 280,
+        height: 280,
+        borderRadius: 140,
+        backgroundColor: 'rgba(198, 40, 41, 0.08)',
+    },
     header: {
         backgroundColor: '#C62829',
         flexDirection: 'row',
@@ -410,34 +449,75 @@ const styles = StyleSheet.create({
     scrollContainer: {
         flex: 1,
     },
-    profileSection: {
-        alignItems: 'center',
-        paddingVertical: 30,
+    profileCard: {
         backgroundColor: '#C62829',
         borderBottomLeftRadius: 32,
         borderBottomRightRadius: 32,
-        marginBottom: 20,
+        paddingVertical: 30,
+        paddingHorizontal: 20,
+        marginBottom: 24,
+        alignItems: 'center',
+        shadowColor: '#C62829',
+        shadowOffset: { width: 0, height: 16 },
+        shadowOpacity: 0.35,
+        shadowRadius: 24,
+        elevation: 15,
+        position: 'relative',
+        overflow: 'hidden',
+    },
+    glowEffect1: {
+        position: 'absolute',
+        top: -60,
+        right: -60,
+        width: 180,
+        height: 180,
+        borderRadius: 90,
+        backgroundColor: 'rgba(255,255,255,0.15)',
+    },
+    glowEffect2: {
+        position: 'absolute',
+        bottom: -40,
+        left: -40,
+        width: 120,
+        height: 120,
+        borderRadius: 60,
+        backgroundColor: 'rgba(255,255,255,0.08)',
+    },
+    patternOverlay: {
+        position: 'absolute',
+        top: 0,
+        right: 0,
+        bottom: 0,
+        left: 0,
+        opacity: 0.05,
+        backgroundColor: 'transparent',
     },
     profileImageContainer: {
         position: 'relative',
         marginBottom: 12,
+        zIndex: 20,
     },
     profileImage: {
         width: 100,
         height: 100,
         borderRadius: 50,
-        backgroundColor: '#FFFFFF',
+        backgroundColor: 'rgba(255,255,255,0.15)',
         justifyContent: 'center',
         alignItems: 'center',
-        borderWidth: 4,
-        borderColor: '#FFF8ED',
+        borderWidth: 1.5,
+        borderColor: 'rgba(255,255,255,0.4)',
+        shadowColor: "#000",
+        shadowOffset: { width: 0, height: 8 },
+        shadowOpacity: 0.2,
+        shadowRadius: 12,
+        elevation: 6,
     },
     profileImagePic: {
         width: 100,
         height: 100,
         borderRadius: 50,
-        borderWidth: 4,
-        borderColor: '#FFF8ED',
+        borderWidth: 1.5,
+        borderColor: 'rgba(255,255,255,0.4)',
     },
     cameraButton: {
         position: 'absolute',
@@ -446,16 +526,22 @@ const styles = StyleSheet.create({
         width: 36,
         height: 36,
         borderRadius: 18,
-        backgroundColor: '#C62829',
+        backgroundColor: '#FFFFFF',
         justifyContent: 'center',
         alignItems: 'center',
-        borderWidth: 3,
-        borderColor: '#FFFFFF',
+        shadowColor: "#000",
+        shadowOffset: { width: 0, height: 2 },
+        shadowOpacity: 0.2,
+        shadowRadius: 4,
+        elevation: 10,
+        zIndex: 10,
     },
     uploadText: {
         fontFamily: Fonts.Inter.medium,
         fontSize: 14,
         color: '#FFFFFF',
+        zIndex: 1,
+        letterSpacing: 0.5,
     },
     section: {
         backgroundColor: '#FFFFFF',

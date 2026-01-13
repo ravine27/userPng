@@ -27,14 +27,6 @@ const BookRideCard = ({ onGoPress }: BookRideCardProps) => {
                             <Text style={styles.title}>Where to?</Text>
                             <Text style={styles.subtitle}>Plan your next journey</Text>
                             <View style={styles.quickInfoRow}>
-                                <View style={styles.infoChip}>
-                                    <Icon name="flash" size={10} color="#FFFFFF" />
-                                    <Text style={styles.infoChipText}>Instant</Text>
-                                </View>
-                                <View style={styles.infoChip}>
-                                    <Icon name="time" size={10} color="#FFFFFF" />
-                                    <Text style={styles.infoChipText}>24/7</Text>
-                                </View>
                             </View>
                         </View>
                     </View>
@@ -56,7 +48,7 @@ const styles = StyleSheet.create({
     card: {
         backgroundColor: '#C62829',
         borderRadius: 32,
-        padding: 26,
+        padding: 20,
         flexDirection: 'row',
         alignItems: 'center',
         justifyContent: 'space-between',
@@ -67,7 +59,7 @@ const styles = StyleSheet.create({
         elevation: 15,
         position: 'relative',
         overflow: 'hidden',
-        minHeight: 140,
+        minHeight: 100,
     },
     glowEffect1: {
         position: 'absolute',
@@ -131,7 +123,7 @@ const styles = StyleSheet.create({
         fontFamily: Fonts.Inter.boldHeading,
         fontSize: 22,
         color: '#FFFFFF',
-        marginBottom: 4,
+        marginBottom: 2,
         letterSpacing: 0.3,
     },
     subtitle: {
