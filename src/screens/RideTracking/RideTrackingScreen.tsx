@@ -117,14 +117,21 @@ const RideTrackingScreen: React.FC<RideTrackingScreenProps> = ({ onBack }) => {
                         },
                     ]}
                 >
-                    <Image
-                        source={require('../../assets/images/car.png')}
-                        style={{
-                            width: 50,
-                            height: 30,
-                        }}
-                        resizeMode="contain"
-                    />
+                    <View style={{
+                        width: 50,
+                        height: 30,
+                        backgroundColor: '#C62829',
+                        borderRadius: 8,
+                        justifyContent: 'center',
+                        alignItems: 'center',
+                        shadowColor: '#C62829',
+                        shadowOffset: { width: 0, height: 2 },
+                        shadowOpacity: 0.4,
+                        shadowRadius: 4,
+                        elevation: 4,
+                    }}>
+                        <Icon name="car-sport" size={28} color="#FFFFFF" />
+                    </View>
                 </Animated.View>
 
                 {/* Time/Distance Bubble - like Uber */}
