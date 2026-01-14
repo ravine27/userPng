@@ -21,6 +21,8 @@ import { useProfile } from '../../context/ProfileContext';
 import CustomDatePicker from '../../components/common/CustomDatePicker';
 import CustomToast from '../../components/common/CustomToast';
 
+const defaultUserMaleImage = require('../../assets/images/usermale.png');
+const defaultUserFemaleImage = require('../../assets/images/userfemale.png');
 const { width } = Dimensions.get('window');
 
 const CreateProfileScreen = () => {
@@ -153,9 +155,10 @@ const CreateProfileScreen = () => {
                         {profileImage ? (
                             <Image source={{ uri: profileImage }} style={styles.profileImagePic} />
                         ) : (
-                            <View style={styles.profileImage}>
-                                <Icon name="person" size={50} color="#FFFFFF" />
-                            </View>
+                            <Image 
+                                source={gender === 'Female' ? defaultUserFemaleImage : defaultUserMaleImage} 
+                                style={styles.profileImagePic} 
+                            />
                         )}
                         <TouchableOpacity style={styles.cameraButton} onPress={handleImagePick}>
                             <Icon name="camera" size={20} color="#C62829" />
@@ -166,8 +169,7 @@ const CreateProfileScreen = () => {
 
                 {/* Personal Details */}
                 <View style={styles.section}>
-                    <Text style={styles.sectionTitle}>Personal Details</Text>
-
+                   
                     <View style={styles.row}>
                         <View style={styles.halfInput}>
                             <Text style={styles.label}>First Name</Text>
@@ -205,7 +207,7 @@ const CreateProfileScreen = () => {
 
                     <View style={styles.row}>
                         <View style={[styles.halfInput, { flex: 0.3 }]}>
-                            <Text style={styles.label}>Code</Text>
+                            <Text style={styles.label}>Phone Number</Text>
                             <TextInput
                                 style={styles.input}
                                 placeholder="+91"
@@ -214,10 +216,10 @@ const CreateProfileScreen = () => {
                             />
                         </View>
                         <View style={[styles.halfInput, { flex: 0.7 }]}>
-                            <Text style={styles.label}>Phone Number</Text>
+                            <Text style={styles.label}>  </Text>
                             <TextInput
                                 style={styles.input}
-                                placeholder="9876543210"
+                                placeholder=""
                                 placeholderTextColor="#9B8B7E"
                                 keyboardType="phone-pad"
                                 value={phone}
@@ -390,7 +392,7 @@ const CreateProfileScreen = () => {
                         </View>
 
                         {/* Title */}
-                        <Text style={styles.successModalTitle}>Profile Updated</Text>
+                        <Text style={styles.successModalTitle}>Profile created</Text>
 
                         {/* Description */}
                         <Text style={styles.successModalDescription}>
