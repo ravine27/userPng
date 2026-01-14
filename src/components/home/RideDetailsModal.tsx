@@ -102,12 +102,12 @@ const RideDetailsModal: React.FC<RideDetailsModalProps> = ({ visible, onClose, r
                         <View style={styles.gridContainer}>
                             <View style={styles.gridRow}>
                                 <View style={styles.gridCard}>
-                                    <Icon name="calendar" size={28} color="#D14D72" />
+                                    <Icon name="calendar" size={22} color="#D14D72" />
                                     <Text style={styles.gridLabel}>Date</Text>
                                     <Text style={styles.gridValue}>{rideData.date}</Text>
                                 </View>
                                 <View style={styles.gridCard}>
-                                    <Icon name="time" size={28} color="#D14D72" />
+                                    <Icon name="time" size={22} color="#D14D72" />
                                     <Text style={styles.gridLabel}>Time</Text>
                                     <Text style={styles.gridValue}>{rideData.time}</Text>
                                 </View>
@@ -115,12 +115,12 @@ const RideDetailsModal: React.FC<RideDetailsModalProps> = ({ visible, onClose, r
 
                             <View style={styles.gridRow}>
                                 <View style={styles.gridCard}>
-                                    <Icon name="people" size={28} color="#D14D72" />
+                                    <Icon name="people" size={22} color="#D14D72" />
                                     <Text style={styles.gridLabel}>Seats</Text>
                                     <Text style={styles.gridValue}>{rideData.seats}</Text>
                                 </View>
                                 <View style={styles.gridCard}>
-                                    <Icon name="car-sport" size={28} color="#D14D72" />
+                                    <Icon name="car-sport" size={22} color="#D14D72" />
                                     <Text style={styles.gridLabel}>Vehicle</Text>
                                     <Text style={styles.gridValue}>{rideData.vehicle}</Text>
                                 </View>
@@ -142,7 +142,7 @@ const RideDetailsModal: React.FC<RideDetailsModalProps> = ({ visible, onClose, r
                         <View style={styles.section}>
                             <View style={styles.assignmentHeader}>
                                 <Icon name="information-circle" size={20} color="#C62829" />
-                                <Text style={styles.sectionTitle}>YOUR RIDE ASSIGNMENT</Text>
+                                <Text style={[styles.sectionTitle, { marginBottom: 0 }]}>YOUR RIDE ASSIGNMENT</Text>
                             </View>
 
                             <View style={{ gap: 12 }}>
@@ -177,7 +177,7 @@ const RideDetailsModal: React.FC<RideDetailsModalProps> = ({ visible, onClose, r
                         <View style={styles.section}>
                             <View style={styles.otpHeader}>
                                 <Icon name="key" size={20} color="#C62829" />
-                                <Text style={styles.sectionTitle}>RIDE START OTP</Text>
+                                <Text style={[styles.sectionTitle, { marginBottom: 0 }]}>RIDE START OTP</Text>
                             </View>
                             <Text style={styles.otpInstruction}>
                                 Share this code with your driver
@@ -375,16 +375,16 @@ const styles = StyleSheet.create({
     },
     gridCard: {
         flex: 1,
-        padding: 16,
+        padding: 10,
         borderRadius: 18,
         alignItems: 'center',
         backgroundColor: '#FFE5E5',
     },
     gridLabel: {
         fontFamily: Fonts.Inter.medium,
-        fontSize: 11,
+        fontSize: 10,
         color: '#B8405E',
-        marginTop: 8,
+        marginTop: 4,
         marginBottom: 4,
     },
     gridValue: {
@@ -536,6 +536,8 @@ const styles = StyleSheet.create({
     },
     primaryActionButton: {
         flex: 1,
+        flexDirection: 'row',
+        justifyContent: 'center',
         backgroundColor: '#C62829',
         paddingVertical: 14,
         borderRadius: 16,

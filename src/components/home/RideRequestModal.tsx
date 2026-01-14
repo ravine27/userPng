@@ -41,22 +41,38 @@ const RideRequestModal: React.FC<RideRequestModalProps> = ({ visible, onClose, o
     const [showDatePicker, setShowDatePicker] = useState(false);
     const [showTimePicker, setShowTimePicker] = useState(false);
 
+    // Multi-step State
+    const [currentStep, setCurrentStep] = useState(1);
+    const totalSteps = 3;
+
     const vehicleOptions = ['Select type', 'Sedan', 'SUV'];
     const seatsOptions = ['5', '6', '7'];
 
-    const handleSendRequest = () => {
-        const requestData = {
-            pickup: pickupLocation,
-            dropoff: dropoffLocation,
-            date,
-            time,
-            seats,
-            vehicle: vehicleType,
-            purpose,
-            notes
-        };
-        onSubmit(requestData);
-        onClose();
+    const handleNext = () => {
+        if (currentStep < totalSteps) {
+            setCurrentStep(currentStep + 1);
+        } else {
+            const requestData = {
+                pickup: pickupLocation,
+                dropoff: dropoffLocation,
+                date,
+                time,
+                seats,
+                vehicle: vehicleType,
+                purpose,
+                notes
+            };
+            onSubmit(requestData);
+            onClose();
+        }
+    };
+
+    const handleBack = () => {
+        if (currentStep > 1) {
+            setCurrentStep(currentStep - 1);
+        } else {
+            onClose();
+        }
     };
 
     return (
@@ -71,223 +87,245 @@ const RideRequestModal: React.FC<RideRequestModalProps> = ({ visible, onClose, o
                     {/* Premium Header */}
                     <View style={styles.headerWrapper}>
                         <View style={styles.header}>
-                            <View style={styles.headerGlow} />
+
                             <View style={styles.headerTitleContainer}>
                                 <View style={styles.iconContainer}>
                                     <Icon name="car-sport" size={26} color="#FFFFFF" />
                                     <View style={styles.iconGlow} />
                                 </View>
                                 <View style={styles.titleSection}>
-                                    <Text style={styles.headerTitle}>New Ride Request</Text>
-                                    <Text style={styles.headerSubtitle}>Fill in your ride details</Text>
+                                    <Text style={styles.headerTitle}>
+                                        {currentStep === 1 ? 'Journey Details' :
+                                            currentStep === 2 ? 'Schedule & Vehicle' : 'Additional Info'}
+                                    </Text>
+                                    <Text style={styles.headerSubtitle}>Step {currentStep} of {totalSteps}</Text>
                                 </View>
                             </View>
                             <TouchableOpacity onPress={onClose} style={styles.closeButton}>
                                 <Icon name="close" size={22} color="#FFFFFF" />
                             </TouchableOpacity>
                         </View>
-                        <View style={styles.progressBar}>
-                            <View style={styles.progressFill} />
+
+                        {/* Step Indicator */}
+                        <View style={styles.stepIndicatorContainer}>
+                            {[1, 2, 3].map((step) => (
+                                <View key={step} style={styles.stepLineContainer}>
+                                    <View
+                                        style={[
+                                            styles.stepLine,
+                                            step <= currentStep ? styles.stepLineActive : styles.stepLineInactive
+                                        ]}
+                                    />
+                                </View>
+                            ))}
                         </View>
+
                     </View>
 
                     <ScrollView contentContainerStyle={styles.body} showsVerticalScrollIndicator={false}>
-                        {/* Location Section */}
-                        <View style={styles.section}>
-                            <View style={styles.sectionHeader}>
-                                <View style={styles.sectionIconBox}>
-                                    <Icon name="map" size={18} color="#C62829" />
+                        {currentStep === 1 && (
+                            <View style={styles.section}>
+                                <View style={styles.sectionHeader}>
+                                    <View style={styles.sectionIconBox}>
+                                        <Icon name="map" size={18} color="#C62829" />
+                                    </View>
+                                    <Text style={styles.sectionTitle}>Journey Details</Text>
                                 </View>
-                                <Text style={styles.sectionTitle}>Journey Details</Text>
-                            </View>
 
-                            {/* Pickup Location */}
-                            <View style={styles.inputContainer}>
-                                <Text style={styles.label}>Pickup Location</Text>
-                                <View style={styles.inputWrapper}>
-                                    <Icon name="location" size={18} color="#C62829" style={{ marginRight: 12 }} />
-                                    <TextInput
-                                        style={styles.input}
-                                        value={pickupLocation}
-                                        onChangeText={setPickupLocation}
-                                        placeholder="Enter pickup address"
-                                        placeholderTextColor="#9B8B7E"
-                                    />
+                                {/* Pickup Location */}
+                                <View style={styles.inputContainer}>
+                                    <Text style={styles.label}>Pickup Location</Text>
+                                    <View style={styles.inputWrapper}>
+                                        <Icon name="location" size={18} color="#C62829" style={{ marginRight: 12 }} />
+                                        <TextInput
+                                            style={styles.input}
+                                            value={pickupLocation}
+                                            onChangeText={setPickupLocation}
+                                            placeholder="Enter pickup address"
+                                            placeholderTextColor="#9B8B7E"
+                                        />
+                                    </View>
                                 </View>
-                            </View>
 
-                            {/* Drop-off Location */}
-                            <View style={styles.inputContainer}>
-                                <Text style={styles.label}>Drop-off Location</Text>
-                                <View style={styles.inputWrapper}>
-                                    <Icon name="navigate" size={18} color="#DBC9A6" style={{ marginRight: 12 }} />
-                                    <TextInput
-                                        style={styles.input}
-                                        value={dropoffLocation}
-                                        onChangeText={setDropoffLocation}
-                                        placeholder="Enter destination address"
-                                        placeholderTextColor="#9B8B7E"
-                                    />
-                                </View>
-                            </View>
-                        </View>
-
-                        {/* Schedule Section */}
-                        <View style={styles.section}>
-                            <View style={styles.sectionHeader}>
-                                <View style={styles.sectionIconBox}>
-                                    <Icon name="time" size={18} color="#C62829" />
-                                </View>
-                                <Text style={styles.sectionTitle}>Schedule</Text>
-                            </View>
-
-                            <View style={styles.row}>
-                                <View style={styles.halfInputContainer}>
-                                    <Text style={styles.label}>Date</Text>
-                                    <TouchableOpacity
-                                        style={styles.inputWrapper}
-                                        onPress={() => setShowDatePicker(true)}
-                                    >
-                                        <Icon name="calendar" size={18} color="#6B5F52" style={{ marginRight: 10 }} />
-                                        <Text style={[styles.input, styles.pickerText]}>{date}</Text>
-                                    </TouchableOpacity>
-                                </View>
-                                <View style={styles.halfInputContainer}>
-                                    <Text style={styles.label}>Time</Text>
-                                    <TouchableOpacity
-                                        style={styles.inputWrapper}
-                                        onPress={() => setShowTimePicker(true)}
-                                    >
-                                        <Icon name="alarm" size={18} color="#6B5F52" style={{ marginRight: 10 }} />
-                                        <Text style={[styles.input, styles.pickerText]}>{time}</Text>
-                                    </TouchableOpacity>
+                                {/* Drop-off Location */}
+                                <View style={styles.inputContainer}>
+                                    <Text style={styles.label}>Drop-off Location</Text>
+                                    <View style={styles.inputWrapper}>
+                                        <Icon name="navigate" size={18} color="#DBC9A6" style={{ marginRight: 12 }} />
+                                        <TextInput
+                                            style={styles.input}
+                                            value={dropoffLocation}
+                                            onChangeText={setDropoffLocation}
+                                            placeholder="Enter destination address"
+                                            placeholderTextColor="#9B8B7E"
+                                        />
+                                    </View>
                                 </View>
                             </View>
-                        </View>
+                        )}
 
-                        {/* Vehicle Section */}
-                        <View style={styles.section}>
-                            <View style={styles.sectionHeader}>
-                                <View style={styles.sectionIconBox}>
-                                    <Icon name="car" size={18} color="#C62829" />
-                                </View>
-                                <Text style={styles.sectionTitle}>Vehicle Preferences</Text>
-                            </View>
-
-                            <View style={styles.row}>
-                                <View style={styles.halfInputContainer}>
-                                    <Text style={styles.label}>Seats</Text>
-                                    <TouchableOpacity
-                                        style={styles.inputWrapper}
-                                        onPress={() => setShowSeatsDropdown(!showSeatsDropdown)}
-                                    >
-                                        <Icon name="people" size={18} color="#6B5F52" style={{ marginRight: 10 }} />
-                                        <Text style={[styles.input, styles.pickerText]}>{seats}</Text>
-                                        <Icon name="chevron-down" size={16} color="#9B8B7E" />
-                                    </TouchableOpacity>
-
-                                    {showSeatsDropdown && (
-                                        <View style={styles.dropdown}>
-                                            {seatsOptions.map((option, index) => (
-                                                <TouchableOpacity
-                                                    key={index}
-                                                    style={styles.dropdownOption}
-                                                    onPress={() => {
-                                                        setSeats(option + ' Seats');
-                                                        setShowSeatsDropdown(false);
-                                                    }}
-                                                >
-                                                    <Text style={[
-                                                        styles.dropdownOptionText,
-                                                        seats === option + ' Seats' && styles.selectedOptionText
-                                                    ]}>
-                                                        {option} Seats
-                                                    </Text>
-                                                    {seats === option + ' Seats' && (
-                                                        <Icon name="checkmark" size={18} color="#C62829" />
-                                                    )}
-                                                </TouchableOpacity>
-                                            ))}
+                        {currentStep === 2 && (
+                            <>
+                                {/* Schedule Section */}
+                                <View style={styles.section}>
+                                    <View style={styles.sectionHeader}>
+                                        <View style={styles.sectionIconBox}>
+                                            <Icon name="time" size={18} color="#C62829" />
                                         </View>
-                                    )}
-                                </View>
-                                <View style={styles.halfInputContainer}>
-                                    <Text style={styles.label}>Vehicle Type</Text>
-                                    <TouchableOpacity
-                                        style={styles.inputWrapper}
-                                        onPress={() => setShowVehicleDropdown(!showVehicleDropdown)}
-                                    >
-                                        <Icon name="car-sport" size={18} color="#6B5F52" style={{ marginRight: 10 }} />
-                                        <Text style={[styles.input, styles.pickerText]}>{vehicleType}</Text>
-                                        <Icon name="chevron-down" size={16} color="#9B8B7E" />
-                                    </TouchableOpacity>
+                                        <Text style={styles.sectionTitle}>Schedule</Text>
+                                    </View>
 
-                                    {showVehicleDropdown && (
-                                        <View style={styles.dropdown}>
-                                            {vehicleOptions.map((option, index) => (
-                                                <TouchableOpacity
-                                                    key={index}
-                                                    style={styles.dropdownOption}
-                                                    onPress={() => {
-                                                        setVehicleType(option);
-                                                        setShowVehicleDropdown(false);
-                                                    }}
-                                                >
-                                                    <Text style={[
-                                                        styles.dropdownOptionText,
-                                                        vehicleType === option && styles.selectedOptionText
-                                                    ]}>
-                                                        {option}
-                                                    </Text>
-                                                    {vehicleType === option && (
-                                                        <Icon name="checkmark" size={18} color="#C62829" />
-                                                    )}
-                                                </TouchableOpacity>
-                                            ))}
+                                    <View style={styles.row}>
+                                        <View style={styles.halfInputContainer}>
+                                            <Text style={styles.label}>Date</Text>
+                                            <TouchableOpacity
+                                                style={styles.inputWrapper}
+                                                onPress={() => setShowDatePicker(true)}
+                                            >
+                                                <Icon name="calendar" size={18} color="#6B5F52" style={{ marginRight: 10 }} />
+                                                <Text style={[styles.input, styles.pickerText]}>{date}</Text>
+                                            </TouchableOpacity>
                                         </View>
-                                    )}
+                                        <View style={styles.halfInputContainer}>
+                                            <Text style={styles.label}>Time</Text>
+                                            <TouchableOpacity
+                                                style={styles.inputWrapper}
+                                                onPress={() => setShowTimePicker(true)}
+                                            >
+                                                <Icon name="alarm" size={18} color="#6B5F52" style={{ marginRight: 10 }} />
+                                                <Text style={[styles.input, styles.pickerText]}>{time}</Text>
+                                            </TouchableOpacity>
+                                        </View>
+                                    </View>
                                 </View>
-                            </View>
-                        </View>
 
-                        {/* Additional Info Section */}
-                        <View style={styles.section}>
-                            <View style={styles.sectionHeader}>
-                                <View style={styles.sectionIconBox}>
-                                    <Icon name="document-text" size={18} color="#C62829" />
-                                </View>
-                                <Text style={styles.sectionTitle}>Additional Information</Text>
-                            </View>
+                                {/* Vehicle Section */}
+                                <View style={styles.section}>
+                                    <View style={styles.sectionHeader}>
+                                        <View style={styles.sectionIconBox}>
+                                            <Icon name="car" size={18} color="#C62829" />
+                                        </View>
+                                        <Text style={styles.sectionTitle}>Vehicle Preferences</Text>
+                                    </View>
 
-                            <View style={styles.inputContainer}>
-                                <Text style={styles.label}>Purpose</Text>
-                                <View style={styles.inputWrapper}>
-                                    <Icon name="flag" size={18} color="#6B5F52" style={{ marginRight: 12 }} />
-                                    <TextInput
-                                        style={styles.input}
-                                        value={purpose}
-                                        onChangeText={setPurpose}
-                                        placeholder="e.g., Airport transfer"
-                                        placeholderTextColor="#9B8B7E"
-                                    />
-                                </View>
-                            </View>
+                                    <View style={styles.row}>
+                                        <View style={styles.halfInputContainer}>
+                                            <Text style={styles.label}>Seats</Text>
+                                            <TouchableOpacity
+                                                style={styles.inputWrapper}
+                                                onPress={() => setShowSeatsDropdown(!showSeatsDropdown)}
+                                            >
+                                                <Icon name="people" size={18} color="#6B5F52" style={{ marginRight: 10 }} />
+                                                <Text style={[styles.input, styles.pickerText]}>{seats}</Text>
+                                                <Icon name="chevron-down" size={16} color="#9B8B7E" />
+                                            </TouchableOpacity>
 
-                            <View style={styles.inputContainer}>
-                                <Text style={styles.label}>Special Requirements (Optional)</Text>
-                                <View style={[styles.inputWrapper, styles.textAreaWrapper]}>
-                                    <TextInput
-                                        style={[styles.input, styles.textArea]}
-                                        value={notes}
-                                        onChangeText={setNotes}
-                                        placeholder="Any special requirements..."
-                                        placeholderTextColor="#9B8B7E"
-                                        multiline
-                                        textAlignVertical="top"
-                                    />
+                                            {showSeatsDropdown && (
+                                                <View style={styles.dropdown}>
+                                                    {seatsOptions.map((option, index) => (
+                                                        <TouchableOpacity
+                                                            key={index}
+                                                            style={styles.dropdownOption}
+                                                            onPress={() => {
+                                                                setSeats(option + ' Seats');
+                                                                setShowSeatsDropdown(false);
+                                                            }}
+                                                        >
+                                                            <Text style={[
+                                                                styles.dropdownOptionText,
+                                                                seats === option + ' Seats' && styles.selectedOptionText
+                                                            ]}>
+                                                                {option} Seats
+                                                            </Text>
+                                                            {seats === option + ' Seats' && (
+                                                                <Icon name="checkmark" size={18} color="#C62829" />
+                                                            )}
+                                                        </TouchableOpacity>
+                                                    ))}
+                                                </View>
+                                            )}
+                                        </View>
+                                        <View style={styles.halfInputContainer}>
+                                            <Text style={styles.label}>Vehicle Type</Text>
+                                            <TouchableOpacity
+                                                style={styles.inputWrapper}
+                                                onPress={() => setShowVehicleDropdown(!showVehicleDropdown)}
+                                            >
+                                                <Icon name="car-sport" size={18} color="#6B5F52" style={{ marginRight: 10 }} />
+                                                <Text style={[styles.input, styles.pickerText]}>{vehicleType}</Text>
+                                                <Icon name="chevron-down" size={16} color="#9B8B7E" />
+                                            </TouchableOpacity>
+
+                                            {showVehicleDropdown && (
+                                                <View style={styles.dropdown}>
+                                                    {vehicleOptions.map((option, index) => (
+                                                        <TouchableOpacity
+                                                            key={index}
+                                                            style={styles.dropdownOption}
+                                                            onPress={() => {
+                                                                setVehicleType(option);
+                                                                setShowVehicleDropdown(false);
+                                                            }}
+                                                        >
+                                                            <Text style={[
+                                                                styles.dropdownOptionText,
+                                                                vehicleType === option && styles.selectedOptionText
+                                                            ]}>
+                                                                {option}
+                                                            </Text>
+                                                            {vehicleType === option && (
+                                                                <Icon name="checkmark" size={18} color="#C62829" />
+                                                            )}
+                                                        </TouchableOpacity>
+                                                    ))}
+                                                </View>
+                                            )}
+                                        </View>
+                                    </View>
+                                </View>
+                            </>
+                        )}
+
+                        {currentStep === 3 && (
+                            /* Additional Info Section */
+                            <View style={styles.section}>
+                                <View style={styles.sectionHeader}>
+                                    <View style={styles.sectionIconBox}>
+                                        <Icon name="document-text" size={18} color="#C62829" />
+                                    </View>
+                                    <Text style={styles.sectionTitle}>Additional Information</Text>
+                                </View>
+
+                                <View style={styles.inputContainer}>
+                                    <Text style={styles.label}>Purpose</Text>
+                                    <View style={styles.inputWrapper}>
+                                        <Icon name="flag" size={18} color="#6B5F52" style={{ marginRight: 12 }} />
+                                        <TextInput
+                                            style={styles.input}
+                                            value={purpose}
+                                            onChangeText={setPurpose}
+                                            placeholder="e.g., Airport transfer"
+                                            placeholderTextColor="#9B8B7E"
+                                        />
+                                    </View>
+                                </View>
+
+                                <View style={styles.inputContainer}>
+                                    <Text style={styles.label}>Special Requirements (Optional)</Text>
+                                    <View style={[styles.inputWrapper, styles.textAreaWrapper]}>
+                                        <TextInput
+                                            style={[styles.input, styles.textArea]}
+                                            value={notes}
+                                            onChangeText={setNotes}
+                                            placeholder="Any special requirements..."
+                                            placeholderTextColor="#9B8B7E"
+                                            multiline
+                                            textAlignVertical="top"
+                                        />
+                                    </View>
                                 </View>
                             </View>
-                        </View>
+                        )}
 
                         <View style={styles.spacer} />
                     </ScrollView>
@@ -296,12 +334,11 @@ const RideRequestModal: React.FC<RideRequestModalProps> = ({ visible, onClose, o
                     <View style={styles.footer}>
                         <View style={styles.footerGradient} />
                         <View style={styles.footerContent}>
-                            <TouchableOpacity style={styles.cancelButton} onPress={onClose}>
-                                <Text style={styles.cancelButtonText}>Cancel</Text>
+                            <TouchableOpacity style={styles.cancelButton} onPress={handleBack}>
+                                <Text style={styles.cancelButtonText}>{currentStep === 1 ? 'Cancel' : 'Back'}</Text>
                             </TouchableOpacity>
-                            <TouchableOpacity style={styles.sendButton} onPress={handleSendRequest}>
-                                <View style={styles.sendButtonGlow} />
-                                <Text style={styles.sendButtonText}>Send Request</Text>
+                            <TouchableOpacity style={styles.sendButton} onPress={handleNext}>
+                                <Text style={styles.sendButtonText}>{currentStep === totalSteps ? 'Send Request' : 'Next'}</Text>
                                 <Icon name="arrow-forward" size={18} color="#FFFFFF" style={{ marginLeft: 6 }} />
                             </TouchableOpacity>
                         </View>
@@ -358,15 +395,7 @@ const styles = StyleSheet.create({
         alignItems: 'flex-start',
         position: 'relative',
     },
-    headerGlow: {
-        position: 'absolute',
-        top: -30,
-        right: -30,
-        width: 120,
-        height: 120,
-        borderRadius: 60,
-        backgroundColor: 'rgba(255,255,255,0.1)',
-    },
+
     headerTitleContainer: {
         flexDirection: 'row',
         alignItems: 'center',
@@ -417,15 +446,7 @@ const styles = StyleSheet.create({
         borderWidth: 1,
         borderColor: 'rgba(255,255,255,0.3)',
     },
-    progressBar: {
-        height: 4,
-        backgroundColor: 'rgba(255,255,255,0.2)',
-    },
-    progressFill: {
-        height: '100%',
-        width: '30%',
-        backgroundColor: 'rgba(255,255,255,0.9)',
-    },
+
     body: {
         padding: 24,
         paddingBottom: 40,
@@ -608,14 +629,29 @@ const styles = StyleSheet.create({
         position: 'relative',
         overflow: 'hidden',
     },
-    sendButtonGlow: {
-        position: 'absolute',
-        top: -20,
-        right: -20,
-        width: 80,
-        height: 80,
-        borderRadius: 40,
-        backgroundColor: 'rgba(255,255,255,0.15)',
+
+    stepIndicatorContainer: {
+        flexDirection: 'row',
+        paddingHorizontal: 24,
+        paddingBottom: 16,
+        gap: 8,
+    },
+    stepLineContainer: {
+        flex: 1,
+        height: 4,
+        borderRadius: 2,
+        backgroundColor: 'rgba(255,255,255,0.2)',
+        overflow: 'hidden',
+    },
+    stepLine: {
+        height: '100%',
+        borderRadius: 2,
+    },
+    stepLineActive: {
+        backgroundColor: '#fff',
+    },
+    stepLineInactive: {
+        backgroundColor: 'transparent',
     },
     sendButtonText: {
         fontFamily: Fonts.Inter.boldHeading,

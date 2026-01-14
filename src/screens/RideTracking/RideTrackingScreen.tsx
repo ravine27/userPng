@@ -187,8 +187,12 @@ const RideTrackingScreen: React.FC<RideTrackingScreenProps> = ({ onBack }) => {
                     {/* Driver Info */}
                     <View style={styles.driverSection}>
                         <View style={styles.driverInfo}>
-                            <View style={styles.driverAvatar}>
-                                <Icon name="person" size={28} color="#C62829" />
+                            <View style={[styles.driverAvatar, { overflow: 'hidden' }]}>
+                                <Image
+                                    source={require('../../assets/images/profileimage1.jpg')}
+                                    style={{ width: '100%', height: '100%' }}
+                                    resizeMode="cover"
+                                />
                             </View>
                             <View style={styles.driverDetails}>
                                 <Text style={styles.driverName}>Amartya Caridia</Text>
@@ -205,8 +209,12 @@ const RideTrackingScreen: React.FC<RideTrackingScreenProps> = ({ onBack }) => {
 
                     {/* Vehicle Info */}
                     <View style={styles.vehicleSection}>
-                        <View style={styles.vehicleIconBox}>
-                            <Icon name="car-sport" size={20} color="#C62829" />
+                        <View style={[styles.vehicleIconBox, { overflow: 'hidden', backgroundColor: 'transparent' }]}>
+                            <Image
+                                source={require('../../assets/images/car1.png')}
+                                style={{ width: '100%', height: '100%' }}
+                                resizeMode="contain"
+                            />
                         </View>
                         <View>
                             <Text style={styles.vehicleLabel}>Vehicle</Text>
@@ -235,19 +243,7 @@ const RideTrackingScreen: React.FC<RideTrackingScreenProps> = ({ onBack }) => {
                         </View>
                     </View>
 
-                    {/* Payment Method */}
-                    <View style={styles.paymentSection}>
-                        <Icon name="card" size={20} color="#6B5F52" />
-                        <Text style={styles.paymentLabel}>Payment Method</Text>
-                        <View style={styles.paymentMethods}>
-                            <View style={styles.paymentChip}>
-                                <Text style={styles.paymentText}>Cash</Text>
-                            </View>
-                            <View style={styles.paymentChip}>
-                                <Text style={styles.paymentText}>UPI</Text>
-                            </View>
-                        </View>
-                    </View>
+                    {/* Payment Method Removed */}
 
                     {/* OTP Display */}
                     <View style={styles.otpSection}>
@@ -535,38 +531,7 @@ const styles = StyleSheet.create({
         fontSize: 15,
         color: '#4A3F35',
     },
-    paymentSection: {
-        flexDirection: 'row',
-        alignItems: 'center',
-        backgroundColor: '#FFF8ED',
-        padding: 14,
-        borderRadius: 16,
-        marginBottom: 16,
-        gap: 10,
-    },
-    paymentLabel: {
-        fontFamily: Fonts.Inter.medium,
-        fontSize: 13,
-        color: '#6B5F52',
-        flex: 1,
-    },
-    paymentMethods: {
-        flexDirection: 'row',
-        gap: 8,
-    },
-    paymentChip: {
-        backgroundColor: '#FFFFFF',
-        paddingHorizontal: 12,
-        paddingVertical: 6,
-        borderRadius: 12,
-        borderWidth: 1,
-        borderColor: '#E8C9B3',
-    },
-    paymentText: {
-        fontFamily: Fonts.Inter.boldHeading,
-        fontSize: 12,
-        color: '#4A3F35',
-    },
+
     otpSection: {
         backgroundColor: '#f9f4ea',
         padding: 16,
