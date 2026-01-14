@@ -193,14 +193,14 @@ const ProfileScreen: React.FC<ProfileScreenProps> = ({ onBack }) => {
                         </View>
                     </View>
 
-                    <Text style={styles.label}>Username</Text>
+                    {/* <Text style={styles.label}>Username</Text>
                     <TextInput
                         style={styles.input}
                         placeholder="@johndoe"
                         placeholderTextColor="#9B8B7E"
                         value={username}
                         onChangeText={setUsername}
-                    />
+                    /> */}
 
                     <Text style={styles.label}>Email</Text>
                     <TextInput
@@ -283,7 +283,7 @@ const ProfileScreen: React.FC<ProfileScreenProps> = ({ onBack }) => {
                     </View>
                 </View>
 
-                {/* Address Section */}
+                {/* Address Section
                 <View style={styles.section}>
                     <Text style={styles.sectionTitle}>Address</Text>
 
@@ -351,9 +351,9 @@ const ProfileScreen: React.FC<ProfileScreenProps> = ({ onBack }) => {
                             />
                         </View>
                     </View>
-                </View>
+                </View> */}
 
-                {/* Preferences Section */}
+                {/* Preferences Section
                 <View style={styles.section}>
                     <Text style={styles.sectionTitle}>Preferences</Text>
 
@@ -362,7 +362,7 @@ const ProfileScreen: React.FC<ProfileScreenProps> = ({ onBack }) => {
                         <Text style={styles.dropdownText}>{language}</Text>
                         <Icon name="chevron-down" size={20} color="#9B8B7E" />
                     </View>
-                </View>
+                </View> */}
 
                 {/* Save Profile Button */}
                 <TouchableOpacity style={styles.completeButton} onPress={handleSaveProfile}>

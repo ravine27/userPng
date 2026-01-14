@@ -9,6 +9,7 @@ import {
     TextInput,
     StatusBar,
     Dimensions,
+    Modal,
 } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import Icon from 'react-native-vector-icons/Ionicons';
@@ -44,6 +45,7 @@ const CreateProfileScreen = () => {
     const [showToast, setShowToast] = useState(false);
     const [toastMessage, setToastMessage] = useState('');
     const [toastType, setToastType] = useState<'success' | 'error'>('success');
+    const [showSuccessModal, setShowSuccessModal] = useState(false);
 
     // Load existing profile if any (e.g. from previous session)
     useEffect(() => {
@@ -102,13 +104,13 @@ const CreateProfileScreen = () => {
                 language,
                 profileImage,
             });
-            setToastMessage('Profile created successfully!');
-            setToastType('success');
-            setShowToast(true);
+            // Show success modal for 3 seconds
+            setShowSuccessModal(true);
             setTimeout(() => {
-                // Navigate to HomeScreen instead of onBack
+                setShowSuccessModal(false);
+                // Navigate to HomeScreen
                 navigation.replace('HomeScreen');
-            }, 1500);
+            }, 3000);
         } catch (error) {
             setToastMessage('Failed to create profile');
             setToastType('error');
@@ -189,14 +191,7 @@ const CreateProfileScreen = () => {
                         </View>
                     </View>
 
-                    <Text style={styles.label}>Username</Text>
-                    <TextInput
-                        style={styles.input}
-                        placeholder="@johndoe"
-                        placeholderTextColor="#9B8B7E"
-                        value={username}
-                        onChangeText={setUsername}
-                    />
+                    
 
                     <Text style={styles.label}>Email</Text>
                     <TextInput
@@ -231,13 +226,8 @@ const CreateProfileScreen = () => {
                         </View>
                     </View>
 
-                    <Text style={styles.label}>Date of Birth</Text>
-                    <TouchableOpacity style={styles.dateInput} onPress={() => setShowDatePicker(true)}>
-                        <Text style={[styles.dateText, !dob && { color: '#9B8B7E' }]}>
-                            {dob || 'DD / MM / YYYY'}
-                        </Text>
-                        <Icon name="calendar-outline" size={20} color="#C62829" />
-                    </TouchableOpacity>
+                    
+                        
 
                     <Text style={styles.label}>Gender</Text>
                     <View style={styles.genderContainer}>
@@ -279,7 +269,7 @@ const CreateProfileScreen = () => {
                     </View>
                 </View>
 
-                {/* Address Section */}
+                {/* Address Section
                 <View style={styles.section}>
                     <Text style={styles.sectionTitle}>Address</Text>
 
@@ -347,9 +337,9 @@ const CreateProfileScreen = () => {
                             />
                         </View>
                     </View>
-                </View>
+                </View> */}
 
-                {/* Preferences Section */}
+                {/* Preferences Section
                 <View style={styles.section}>
                     <Text style={styles.sectionTitle}>Preferences</Text>
 
@@ -358,7 +348,7 @@ const CreateProfileScreen = () => {
                         <Text style={styles.dropdownText}>{language}</Text>
                         <Icon name="chevron-down" size={20} color="#9B8B7E" />
                     </View>
-                </View>
+                </View> */}
 
                 {/* Save Profile Button */}
                 <TouchableOpacity style={styles.completeButton} onPress={handleSaveProfile}>
@@ -368,7 +358,7 @@ const CreateProfileScreen = () => {
                 <View style={{ height: 40 }} />
             </ScrollView>
 
-            {/* Date Picker Modal */}
+            {/* Date Picker Modal
             <CustomDatePicker
                 visible={showDatePicker}
                 onClose={() => setShowDatePicker(false)}
@@ -376,7 +366,7 @@ const CreateProfileScreen = () => {
                     setDob(dateStr);
                     setShowDatePicker(false);
                 }}
-            />
+            /> */}
 
             {/* Custom Toast Notification */}
             <CustomToast
@@ -385,6 +375,41 @@ const CreateProfileScreen = () => {
                 type={toastType}
                 onHide={() => setShowToast(false)}
             />
+
+            {/* Success Modal */}
+            <Modal
+                visible={showSuccessModal}
+                transparent={true}
+                animationType="fade"
+            >
+                <View style={styles.successModalOverlay}>
+                    <View style={styles.successModalContent}>
+                        {/* Checkmark Circle Icon */}
+                        <View style={styles.successIconContainer}>
+                            <Icon name="checkmark-circle" size={80} color="#C62829" />
+                        </View>
+
+                        {/* Title */}
+                        <Text style={styles.successModalTitle}>Profile Updated</Text>
+
+                        {/* Description */}
+                        <Text style={styles.successModalDescription}>
+                            Your profile has been created successfully.
+                        </Text>
+
+                        {/* Button */}
+                        <TouchableOpacity
+                            style={styles.successModalButton}
+                            onPress={() => {
+                                setShowSuccessModal(false);
+                                navigation.replace('HomeScreen');
+                            }}
+                        >
+                            <Text style={styles.successModalButtonText}>Thanks</Text>
+                        </TouchableOpacity>
+                    </View>
+                </View>
+            </Modal>
         </View>
     );
 };
@@ -682,6 +707,62 @@ const styles = StyleSheet.create({
         fontSize: 16,
         color: '#FFFFFF',
         letterSpacing: 1,
+    },
+    // Success Modal Styles
+    successModalOverlay: {
+        flex: 1,
+        backgroundColor: 'rgba(0, 0, 0, 0.5)',
+        justifyContent: 'center',
+        alignItems: 'center',
+    },
+    successModalContent: {
+        backgroundColor: '#FFFFFF',
+        borderRadius: 24,
+        padding: 40,
+        alignItems: 'center',
+        width: width * 0.85,
+        shadowColor: '#000',
+        shadowOffset: { width: 0, height: 10 },
+        shadowOpacity: 0.3,
+        shadowRadius: 20,
+        elevation: 15,
+    },
+    successIconContainer: {
+        marginBottom: 24,
+    },
+    successModalTitle: {
+        fontFamily: Fonts.Inter.boldHeading,
+        fontSize: 24,
+        color: '#4A3F35',
+        marginBottom: 12,
+        textAlign: 'center',
+    },
+    successModalDescription: {
+        fontFamily: Fonts.Inter.regular,
+        fontSize: 14,
+        color: '#9B8B7E',
+        textAlign: 'center',
+        marginBottom: 28,
+        lineHeight: 20,
+    },
+    successModalButton: {
+        backgroundColor: '#C62829',
+        paddingVertical: 14,
+        paddingHorizontal: 48,
+        borderRadius: 12,
+        width: '100%',
+        alignItems: 'center',
+        shadowColor: '#C62829',
+        shadowOffset: { width: 0, height: 4 },
+        shadowOpacity: 0.3,
+        shadowRadius: 8,
+        elevation: 6,
+    },
+    successModalButtonText: {
+        fontFamily: Fonts.Inter.boldHeading,
+        fontSize: 16,
+        color: '#FFFFFF',
+        letterSpacing: 0.5,
     },
 });
 

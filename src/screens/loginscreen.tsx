@@ -121,7 +121,7 @@ const LoginScreen = () => {
             {/* Headers */}
             <View style={styles.headerContent}>
               <Text style={styles.welcomeText}>Welcome to PNG-Fleet APP</Text>
-              <Text style={styles.subWelcomeText}>Sign in to continue to your account</Text>
+              <Text style={styles.subWelcomeText}>Enter your email and password to Login</Text>
             </View>
 
             {/* Form */}
