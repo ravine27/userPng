@@ -22,6 +22,7 @@ export interface ProfileData {
 interface ProfileContextType {
     profile: ProfileData | null;
     updateProfile: (data: ProfileData) => Promise<void>;
+    logout: () => Promise<void>;
     loading: boolean;
 }
 
@@ -60,8 +61,17 @@ export const ProfileProvider: React.FC<{ children: ReactNode }> = ({ children })
         }
     };
 
+    const logout = async () => {
+        try {
+            await AsyncStorage.removeItem(PROFILE_STORAGE_KEY);
+            setProfile(null);
+        } catch (error) {
+            console.error('Error logging out:', error);
+        }
+    };
+
     return (
-        <ProfileContext.Provider value={{ profile, updateProfile, loading }}>
+        <ProfileContext.Provider value={{ profile, updateProfile, logout, loading }}>
             {children}
         </ProfileContext.Provider>
     );

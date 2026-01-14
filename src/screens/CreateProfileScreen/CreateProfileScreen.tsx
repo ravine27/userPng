@@ -13,22 +13,18 @@ import {
 import { SafeAreaView } from 'react-native-safe-area-context';
 import Icon from 'react-native-vector-icons/Ionicons';
 import { launchImageLibrary } from 'react-native-image-picker';
+import { useNavigation } from '@react-navigation/native';
 import { Colors } from '../../theme/colors';
 import { Fonts } from '../../theme/fonts';
 import { useProfile } from '../../context/ProfileContext';
-import { useNavigation } from '@react-navigation/native';
 import CustomDatePicker from '../../components/common/CustomDatePicker';
 import CustomToast from '../../components/common/CustomToast';
 
 const { width } = Dimensions.get('window');
 
-interface ProfileScreenProps {
-    onBack: () => void;
-}
-
-const ProfileScreen: React.FC<ProfileScreenProps> = ({ onBack }) => {
+const CreateProfileScreen = () => {
     const navigation = useNavigation<any>();
-    const { profile, updateProfile, logout } = useProfile();
+    const { profile, updateProfile } = useProfile();
     const [firstName, setFirstName] = useState('');
     const [lastName, setLastName] = useState('');
     const [username, setUsername] = useState('');
@@ -49,7 +45,7 @@ const ProfileScreen: React.FC<ProfileScreenProps> = ({ onBack }) => {
     const [toastMessage, setToastMessage] = useState('');
     const [toastType, setToastType] = useState<'success' | 'error'>('success');
 
-    // Load existing profile on mount
+    // Load existing profile if any (e.g. from previous session)
     useEffect(() => {
         if (profile) {
             setFirstName(profile.firstName || '');
@@ -106,23 +102,18 @@ const ProfileScreen: React.FC<ProfileScreenProps> = ({ onBack }) => {
                 language,
                 profileImage,
             });
-            setToastMessage('Profile saved successfully!');
+            setToastMessage('Profile created successfully!');
             setToastType('success');
             setShowToast(true);
             setTimeout(() => {
-                onBack();
+                // Navigate to HomeScreen instead of onBack
+                navigation.replace('HomeScreen');
             }, 1500);
         } catch (error) {
-            setToastMessage('Failed to save profile');
+            setToastMessage('Failed to create profile');
             setToastType('error');
             setShowToast(true);
         }
-    };
-
-    const handleDateSelect = (date: Date) => {
-        const formatted = date.toLocaleDateString('en-GB'); // DD/MM/YYYY format
-        setDob(formatted);
-        setShowDatePicker(false);
     };
 
     return (
@@ -136,10 +127,15 @@ const ProfileScreen: React.FC<ProfileScreenProps> = ({ onBack }) => {
 
             {/* Red Header */}
             <View style={styles.header}>
-                <TouchableOpacity style={styles.backButton} onPress={onBack}>
+                <TouchableOpacity style={styles.backButton} onPress={() => {
+                    navigation.reset({
+                        index: 0,
+                        routes: [{ name: 'LoginScreen' }],
+                    });
+                }}>
                     <Icon name="arrow-back" size={24} color="#FFFFFF" />
                 </TouchableOpacity>
-                <Text style={styles.headerTitle}>Profile</Text>
+                <Text style={styles.headerTitle}>Create Profile</Text>
                 <View style={styles.placeholder} />
             </View>
 
@@ -163,7 +159,7 @@ const ProfileScreen: React.FC<ProfileScreenProps> = ({ onBack }) => {
                             <Icon name="camera" size={20} color="#C62829" />
                         </TouchableOpacity>
                     </View>
-                    <Text style={styles.uploadText}>Upload Profile Picture</Text>
+                    <Text style={styles.uploadText}>Upload Create Profile Picture</Text>
                 </View>
 
                 {/* Personal Details */}
@@ -366,18 +362,7 @@ const ProfileScreen: React.FC<ProfileScreenProps> = ({ onBack }) => {
 
                 {/* Save Profile Button */}
                 <TouchableOpacity style={styles.completeButton} onPress={handleSaveProfile}>
-                    <Text style={styles.completeButtonText}>Save Changes</Text>
-                </TouchableOpacity>
-
-                <TouchableOpacity style={styles.logoutButton} onPress={() => {
-                    logout();
-                    navigation.reset({
-                        index: 0,
-                        routes: [{ name: 'LoginScreen' }],
-                    });
-                }}>
-                    <Icon name="log-out-outline" size={20} color="#E53935" />
-                    <Text style={styles.logoutButtonText}>Logout</Text>
+                    <Text style={styles.completeButtonText}>Continue</Text>
                 </TouchableOpacity>
 
                 <View style={{ height: 40 }} />
@@ -698,25 +683,6 @@ const styles = StyleSheet.create({
         color: '#FFFFFF',
         letterSpacing: 1,
     },
-    logoutButton: {
-        flexDirection: 'row',
-        alignItems: 'center',
-        justifyContent: 'center',
-        marginTop: 20,
-        marginBottom: 10,
-        paddingVertical: 15,
-        borderWidth: 1,
-        borderColor: '#E53935',
-        marginHorizontal: 20,
-        borderRadius: 18,
-        backgroundColor: '#FFF0F0',
-        gap: 8,
-    },
-    logoutButtonText: {
-        fontFamily: Fonts.Inter.boldHeading,
-        fontSize: 16,
-        color: '#E53935',
-    },
 });
 
-export default ProfileScreen;
+export default CreateProfileScreen;
