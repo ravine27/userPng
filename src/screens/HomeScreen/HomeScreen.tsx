@@ -33,22 +33,22 @@ const HomeScreen = () => {
     const handleProfilePress = () => {
         console.log('Profile Header Pressed!');
         setShowProfileScreen(true);
-        // Slide in from left
-        Animated.spring(profileSlideAnim, {
+        // Slide in from left with smooth timing animation
+        Animated.timing(profileSlideAnim, {
             toValue: 0,
+            duration: 300,
             useNativeDriver: true,
-            friction: 9,
-            tension: 50,
+            easing: Easing.out(Easing.ease),
         }).start();
     };
 
     const handleProfileBack = () => {
-        // Slide out to left
-        Animated.spring(profileSlideAnim, {
+        // Slide out to left with smooth timing animation
+        Animated.timing(profileSlideAnim, {
             toValue: -width,
+            duration: 300,
             useNativeDriver: true,
-            friction: 9,
-            tension: 50,
+            easing: Easing.in(Easing.ease),
         }).start(() => {
             setShowProfileScreen(false);
         });
@@ -250,6 +250,7 @@ const styles = StyleSheet.create({
         backgroundColor: '#f9f4ea',
         zIndex: 1000,
         elevation: 20, // For Android
+        overflow: 'hidden', // Clip ambient circles
     },
 });
 

@@ -167,14 +167,14 @@ const RideTrackingScreen: React.FC<RideTrackingScreenProps> = ({ onBack }) => {
                 <View style={[styles.pickupMarker, { left: PICKUP_X - 8, top: PICKUP_Y - 8 }]}>
                     <View style={styles.markerContainer}>
                         <View style={[styles.markerDot, { backgroundColor: '#4CAF50' }]} />
-                        <Text style={styles.markerLabel}>Pick-up</Text>
+                        <Text style={styles.markerLabel}>Start</Text>
                     </View>
                 </View>
 
                 <View style={[styles.dropoffMarker, { left: DROPOFF_X - 8, top: DROPOFF_Y - 8 }]}>
                     <View style={styles.markerContainer}>
                         <View style={[styles.markerDot, { backgroundColor: '#C62829' }]} />
-                        <Text style={styles.markerLabel}>Drop-off</Text>
+                        <Text style={styles.markerLabel}>Pick-up</Text>
                     </View>
                 </View>
             </View>

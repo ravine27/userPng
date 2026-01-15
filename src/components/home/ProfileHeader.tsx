@@ -13,9 +13,20 @@ interface ProfileHeaderProps {
 const ProfileHeader = ({ onProfilePress, onNotificationPress }: ProfileHeaderProps) => {
     const { profile } = useProfile();
 
-    // Default placeholder if no image is available
-    const defaultImage = 'https://ui-avatars.com/api/?name=User&background=random';
-    const profileImage = profile?.profileImage || defaultImage;
+    // Default avatars
+    const avatarMale = require('../../assets/images/avatar_male.png');
+    const avatarFemale = require('../../assets/images/avatar_female.png');
+
+    const getProfileImageSource = () => {
+        if (profile?.profileImage) {
+            return { uri: profile.profileImage };
+        }
+        if (profile?.gender === 'Female') {
+            return avatarFemale;
+        }
+        return avatarMale;
+    };
+
     const userName = profile?.firstName || 'User';
 
     return (
@@ -28,7 +39,7 @@ const ProfileHeader = ({ onProfilePress, onNotificationPress }: ProfileHeaderPro
             >
                 <View style={styles.imageContainer}>
                     <Image
-                        source={{ uri: profileImage }}
+                        source={getProfileImageSource()}
                         style={styles.profileImage}
                     />
                 </View>

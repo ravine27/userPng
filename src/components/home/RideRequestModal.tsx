@@ -43,7 +43,7 @@ const RideRequestModal: React.FC<RideRequestModalProps> = ({ visible, onClose, o
 
     // Multi-step State
     const [currentStep, setCurrentStep] = useState(1);
-    const totalSteps = 3;
+    const totalSteps = 2;
 
     const vehicleOptions = ['Select type', 'Sedan', 'SUV'];
     const seatsOptions = ['5', '6', '7'];
@@ -95,8 +95,7 @@ const RideRequestModal: React.FC<RideRequestModalProps> = ({ visible, onClose, o
                                 </View>
                                 <View style={styles.titleSection}>
                                     <Text style={styles.headerTitle}>
-                                        {currentStep === 1 ? 'Journey Details' :
-                                            currentStep === 2 ? 'Schedule & Vehicle' : 'Additional Info'}
+                                        {currentStep === 1 ? 'Journey & Schedule' : 'Vehicle & Details'}
                                     </Text>
                                     <Text style={styles.headerSubtitle}>Step {currentStep} of {totalSteps}</Text>
                                 </View>
@@ -108,7 +107,7 @@ const RideRequestModal: React.FC<RideRequestModalProps> = ({ visible, onClose, o
 
                         {/* Step Indicator */}
                         <View style={styles.stepIndicatorContainer}>
-                            {[1, 2, 3].map((step) => (
+                            {[1, 2].map((step) => (
                                 <View key={step} style={styles.stepLineContainer}>
                                     <View
                                         style={[
@@ -124,49 +123,48 @@ const RideRequestModal: React.FC<RideRequestModalProps> = ({ visible, onClose, o
 
                     <ScrollView contentContainerStyle={styles.body} showsVerticalScrollIndicator={false}>
                         {currentStep === 1 && (
-                            <View style={styles.section}>
-                                <View style={styles.sectionHeader}>
-                                    <View style={styles.sectionIconBox}>
-                                        <Icon name="map" size={18} color="#C62829" />
-                                    </View>
-                                    <Text style={styles.sectionTitle}>Journey Details</Text>
-                                </View>
-
-                                {/* Pickup Location */}
-                                <View style={styles.inputContainer}>
-                                    <Text style={styles.label}>Pickup Location</Text>
-                                    <View style={styles.inputWrapper}>
-                                        <Icon name="location" size={18} color="#C62829" style={{ marginRight: 12 }} />
-                                        <TextInput
-                                            style={styles.input}
-                                            value={pickupLocation}
-                                            onChangeText={setPickupLocation}
-                                            placeholder="Enter pickup address"
-                                            placeholderTextColor="#9B8B7E"
-                                        />
-                                    </View>
-                                </View>
-
-                                {/* Drop-off Location */}
-                                <View style={styles.inputContainer}>
-                                    <Text style={styles.label}>Drop-off Location</Text>
-                                    <View style={styles.inputWrapper}>
-                                        <Icon name="navigate" size={18} color="#DBC9A6" style={{ marginRight: 12 }} />
-                                        <TextInput
-                                            style={styles.input}
-                                            value={dropoffLocation}
-                                            onChangeText={setDropoffLocation}
-                                            placeholder="Enter destination address"
-                                            placeholderTextColor="#9B8B7E"
-                                        />
-                                    </View>
-                                </View>
-                            </View>
-                        )}
-
-                        {currentStep === 2 && (
                             <>
-                                {/* Schedule Section */}
+                                {/* Journey Details Section */}
+                                <View style={styles.section}>
+                                    <View style={styles.sectionHeader}>
+                                        <View style={styles.sectionIconBox}>
+                                            <Icon name="map" size={18} color="#C62829" />
+                                        </View>
+                                        <Text style={styles.sectionTitle}>Journey Details</Text>
+                                    </View>
+
+                                    {/* Pickup Location */}
+                                    <View style={styles.inputContainer}>
+                                        <Text style={styles.label}>Pickup Location</Text>
+                                        <View style={styles.inputWrapper}>
+                                            <Icon name="location" size={18} color="#C62829" style={{ marginRight: 12 }} />
+                                            <TextInput
+                                                style={styles.input}
+                                                value={pickupLocation}
+                                                onChangeText={setPickupLocation}
+                                                placeholder="Enter pickup address"
+                                                placeholderTextColor="#9B8B7E"
+                                            />
+                                        </View>
+                                    </View>
+
+                                    {/* Drop-off Location */}
+                                    <View style={styles.inputContainer}>
+                                        <Text style={styles.label}>Drop-off Location</Text>
+                                        <View style={styles.inputWrapper}>
+                                            <Icon name="navigate" size={18} color="#DBC9A6" style={{ marginRight: 12 }} />
+                                            <TextInput
+                                                style={styles.input}
+                                                value={dropoffLocation}
+                                                onChangeText={setDropoffLocation}
+                                                placeholder="Enter destination address"
+                                                placeholderTextColor="#9B8B7E"
+                                            />
+                                        </View>
+                                    </View>
+                                </View>
+
+                                {/* Schedule Section moved to Step 1 */}
                                 <View style={styles.section}>
                                     <View style={styles.sectionHeader}>
                                         <View style={styles.sectionIconBox}>
@@ -198,7 +196,11 @@ const RideRequestModal: React.FC<RideRequestModalProps> = ({ visible, onClose, o
                                         </View>
                                     </View>
                                 </View>
+                            </>
+                        )}
 
+                        {currentStep === 2 && (
+                            <>
                                 {/* Vehicle Section */}
                                 <View style={styles.section}>
                                     <View style={styles.sectionHeader}>
@@ -283,48 +285,46 @@ const RideRequestModal: React.FC<RideRequestModalProps> = ({ visible, onClose, o
                                         </View>
                                     </View>
                                 </View>
+
+                                {/* Additional Info Section */}
+                                <View style={styles.section}>
+                                    <View style={styles.sectionHeader}>
+                                        <View style={styles.sectionIconBox}>
+                                            <Icon name="document-text" size={18} color="#C62829" />
+                                        </View>
+                                        <Text style={styles.sectionTitle}>Additional Information</Text>
+                                    </View>
+
+                                    <View style={styles.inputContainer}>
+                                        <Text style={styles.label}>Purpose</Text>
+                                        <View style={styles.inputWrapper}>
+                                            <Icon name="flag" size={18} color="#6B5F52" style={{ marginRight: 12 }} />
+                                            <TextInput
+                                                style={styles.input}
+                                                value={purpose}
+                                                onChangeText={setPurpose}
+                                                placeholder="e.g., Airport transfer"
+                                                placeholderTextColor="#9B8B7E"
+                                            />
+                                        </View>
+                                    </View>
+
+                                    <View style={styles.inputContainer}>
+                                        <Text style={styles.label}>Special Requirements (Optional)</Text>
+                                        <View style={[styles.inputWrapper, styles.textAreaWrapper]}>
+                                            <TextInput
+                                                style={[styles.input, styles.textArea]}
+                                                value={notes}
+                                                onChangeText={setNotes}
+                                                placeholder="Any special requirements..."
+                                                placeholderTextColor="#9B8B7E"
+                                                multiline
+                                                textAlignVertical="top"
+                                            />
+                                        </View>
+                                    </View>
+                                </View>
                             </>
-                        )}
-
-                        {currentStep === 3 && (
-                            /* Additional Info Section */
-                            <View style={styles.section}>
-                                <View style={styles.sectionHeader}>
-                                    <View style={styles.sectionIconBox}>
-                                        <Icon name="document-text" size={18} color="#C62829" />
-                                    </View>
-                                    <Text style={styles.sectionTitle}>Additional Information</Text>
-                                </View>
-
-                                <View style={styles.inputContainer}>
-                                    <Text style={styles.label}>Purpose</Text>
-                                    <View style={styles.inputWrapper}>
-                                        <Icon name="flag" size={18} color="#6B5F52" style={{ marginRight: 12 }} />
-                                        <TextInput
-                                            style={styles.input}
-                                            value={purpose}
-                                            onChangeText={setPurpose}
-                                            placeholder="e.g., Airport transfer"
-                                            placeholderTextColor="#9B8B7E"
-                                        />
-                                    </View>
-                                </View>
-
-                                <View style={styles.inputContainer}>
-                                    <Text style={styles.label}>Special Requirements (Optional)</Text>
-                                    <View style={[styles.inputWrapper, styles.textAreaWrapper]}>
-                                        <TextInput
-                                            style={[styles.input, styles.textArea]}
-                                            value={notes}
-                                            onChangeText={setNotes}
-                                            placeholder="Any special requirements..."
-                                            placeholderTextColor="#9B8B7E"
-                                            multiline
-                                            textAlignVertical="top"
-                                        />
-                                    </View>
-                                </View>
-                            </View>
                         )}
 
                         <View style={styles.spacer} />
@@ -449,10 +449,10 @@ const styles = StyleSheet.create({
 
     body: {
         padding: 24,
-        paddingBottom: 40,
+        paddingBottom: 0,
     },
     section: {
-        marginBottom: 28,
+        marginBottom: 20,
     },
     sectionHeader: {
         flexDirection: 'row',
@@ -533,7 +533,7 @@ const styles = StyleSheet.create({
         textAlignVertical: 'top',
     },
     spacer: {
-        height: 20,
+        height: 0,
     },
     dropdown: {
         position: 'absolute',

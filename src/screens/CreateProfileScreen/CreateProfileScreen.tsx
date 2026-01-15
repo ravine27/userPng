@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import {
     View,
     Text,
@@ -48,6 +48,8 @@ const CreateProfileScreen = () => {
     const [toastMessage, setToastMessage] = useState('');
     const [toastType, setToastType] = useState<'success' | 'error'>('success');
     const [showSuccessModal, setShowSuccessModal] = useState(false);
+    const [loading, setLoading] = useState(false);
+    const navigationRef = useRef(false);
 
     // Load existing profile if any (e.g. from previous session)
     useEffect(() => {
@@ -87,7 +89,22 @@ const CreateProfileScreen = () => {
         }
     };
 
+    const validateForm = () => {
+        if (!firstName || !lastName || !email) {
+            return false;
+        }
+        return true;
+    };
+
     const handleSaveProfile = async () => {
+        if (!validateForm()) {
+            setToastMessage('Please fill all required fields correctly');
+            setToastType('error');
+            setShowToast(true);
+            return;
+        }
+
+        setLoading(true);
         try {
             await updateProfile({
                 firstName,
@@ -106,17 +123,30 @@ const CreateProfileScreen = () => {
                 language,
                 profileImage,
             });
-            // Show success modal for 3 seconds
+            setLoading(false);
             setShowSuccessModal(true);
+
+            // Auto-navigate after 3 seconds if user doesn't click "Thanks"
             setTimeout(() => {
-                setShowSuccessModal(false);
-                // Navigate to HomeScreen
-                navigation.replace('HomeScreen');
+                if (!navigationRef.current) {
+                    navigationRef.current = true; // Mark as navigated
+                    setShowSuccessModal(false);
+                    navigation.replace('HomeScreen');
+                }
             }, 3000);
         } catch (error) {
-            setToastMessage('Failed to create profile');
+            setLoading(false);
+            setToastMessage('Failed to save profile');
             setToastType('error');
             setShowToast(true);
+        }
+    };
+
+    const handleSuccessButtonPress = () => {
+        if (!navigationRef.current) {
+            navigationRef.current = true; // Mark as navigated
+            setShowSuccessModal(false);
+            navigation.replace('HomeScreen');
         }
     };
 
@@ -155,9 +185,9 @@ const CreateProfileScreen = () => {
                         {profileImage ? (
                             <Image source={{ uri: profileImage }} style={styles.profileImagePic} />
                         ) : (
-                            <Image 
-                                source={gender === 'Female' ? defaultUserFemaleImage : defaultUserMaleImage} 
-                                style={styles.profileImagePic} 
+                            <Image
+                                source={gender === 'Female' ? defaultUserFemaleImage : defaultUserMaleImage}
+                                style={styles.profileImagePic}
                             />
                         )}
                         <TouchableOpacity style={styles.cameraButton} onPress={handleImagePick}>
@@ -169,7 +199,7 @@ const CreateProfileScreen = () => {
 
                 {/* Personal Details */}
                 <View style={styles.section}>
-                   
+
                     <View style={styles.row}>
                         <View style={styles.halfInput}>
                             <Text style={styles.label}>First Name</Text>
@@ -193,7 +223,7 @@ const CreateProfileScreen = () => {
                         </View>
                     </View>
 
-                    
+
 
                     <Text style={styles.label}>Email</Text>
                     <TextInput
@@ -228,8 +258,8 @@ const CreateProfileScreen = () => {
                         </View>
                     </View>
 
-                    
-                        
+
+
 
                     <Text style={styles.label}>Gender</Text>
                     <View style={styles.genderContainer}>
@@ -402,10 +432,7 @@ const CreateProfileScreen = () => {
                         {/* Button */}
                         <TouchableOpacity
                             style={styles.successModalButton}
-                            onPress={() => {
-                                setShowSuccessModal(false);
-                                navigation.replace('HomeScreen');
-                            }}
+                            onPress={handleSuccessButtonPress}
                         >
                             <Text style={styles.successModalButtonText}>Thanks</Text>
                         </TouchableOpacity>

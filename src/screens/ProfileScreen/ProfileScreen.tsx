@@ -9,6 +9,7 @@ import {
     TextInput,
     StatusBar,
     Dimensions,
+    Platform,
 } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import Icon from 'react-native-vector-icons/Ionicons';
@@ -125,6 +126,16 @@ const ProfileScreen: React.FC<ProfileScreenProps> = ({ onBack }) => {
         setShowDatePicker(false);
     };
 
+    const avatarMale = require('../../assets/images/avatar_male.png');
+    const avatarFemale = require('../../assets/images/avatar_female.png');
+
+    const getDisplayImage = () => {
+        if (profileImage) {
+            return { uri: profileImage };
+        }
+        return gender === 'Female' ? avatarFemale : avatarMale;
+    };
+
     return (
         <View style={styles.container}>
             <StatusBar barStyle="light-content" backgroundColor="#C62829" />
@@ -134,31 +145,29 @@ const ProfileScreen: React.FC<ProfileScreenProps> = ({ onBack }) => {
             <View style={styles.ambientCircleBottom} />
             <View style={styles.ambientCircleMiddle} />
 
-            {/* Red Header */}
-            <View style={styles.header}>
+            {/* Fixed Back Button (Absolute) */}
+            <View style={styles.absoluteBackButton}>
                 <TouchableOpacity style={styles.backButton} onPress={onBack}>
                     <Icon name="arrow-back" size={24} color="#FFFFFF" />
                 </TouchableOpacity>
-                <Text style={styles.headerTitle}>Profile</Text>
-                <View style={styles.placeholder} />
             </View>
 
             <ScrollView style={styles.scrollContainer} showsVerticalScrollIndicator={false}>
                 {/* Profile Picture Section - Redesigned as Card */}
+                {/* This card now serves as the header background as well */}
                 <View style={styles.profileCard}>
                     {/* Decorative Glare/Glow Effects */}
                     <View style={styles.glowEffect1} />
                     <View style={styles.glowEffect2} />
                     <View style={styles.patternOverlay} />
 
+                    {/* Scrollable Header Title */}
+                    <View style={styles.headerTitleRow}>
+                        <Text style={styles.headerTitle}>Profile</Text>
+                    </View>
+
                     <View style={styles.profileImageContainer}>
-                        {profileImage ? (
-                            <Image source={{ uri: profileImage }} style={styles.profileImagePic} />
-                        ) : (
-                            <View style={styles.profileImage}>
-                                <Icon name="person" size={50} color="#FFFFFF" />
-                            </View>
-                        )}
+                        <Image source={getDisplayImage()} style={styles.profileImagePic} />
                         <TouchableOpacity style={styles.cameraButton} onPress={handleImagePick}>
                             <Icon name="camera" size={20} color="#C62829" />
                         </TouchableOpacity>
@@ -412,7 +421,7 @@ const styles = StyleSheet.create({
     // Aesthetic Warm Ambient Circles
     ambientCircleTop: {
         position: 'absolute',
-        top: -120,
+        top: -200,
         right: -100,
         width: 320,
         height: 320,
@@ -438,26 +447,32 @@ const styles = StyleSheet.create({
         borderRadius: 140,
         backgroundColor: 'rgba(198, 40, 41, 0.08)',
     },
-    header: {
-        backgroundColor: '#C62829',
-        flexDirection: 'row',
+    absoluteBackButton: {
+        position: 'absolute',
+        top: 0,
+        left: 20,
+        paddingTop: Platform.OS === 'android' ? 40 : 16,
+        zIndex: 100,
+    },
+    headerTitleRow: {
+        width: '100%',
         alignItems: 'center',
-        justifyContent: 'space-between',
-        paddingHorizontal: 20,
-        paddingVertical: 16,
+        justifyContent: 'center',
+        paddingTop: Platform.OS === 'android' ? 10 : 0, // Visual adjustment
+        marginBottom: 20,
     },
     backButton: {
-        width: 40,
-        height: 40,
+        width: 44,
+        height: 44,
+        borderRadius: 22,
+        backgroundColor: 'rgba(255,255,255,0.2)', // Semi-transparent circle
         justifyContent: 'center',
+        alignItems: 'center',
     },
     headerTitle: {
         fontFamily: Fonts.Inter.boldHeading,
-        fontSize: 20,
+        fontSize: 25,
         color: '#FFFFFF',
-    },
-    placeholder: {
-        width: 40,
     },
     scrollContainer: {
         flex: 1,
@@ -466,7 +481,8 @@ const styles = StyleSheet.create({
         backgroundColor: '#C62829',
         borderBottomLeftRadius: 32,
         borderBottomRightRadius: 32,
-        paddingVertical: 30,
+        paddingTop: Platform.OS === 'android' ? 40 : 20, // Reduced padding since title is inside
+        paddingBottom: 30,
         paddingHorizontal: 20,
         marginBottom: 24,
         alignItems: 'center',
@@ -476,15 +492,15 @@ const styles = StyleSheet.create({
         shadowRadius: 24,
         elevation: 15,
         position: 'relative',
-        overflow: 'hidden',
+        // overflow: 'hidden', 
     },
     glowEffect1: {
         position: 'absolute',
-        top: -60,
-        right: -60,
-        width: 180,
-        height: 180,
-        borderRadius: 90,
+        top: -80,
+        right: -50,
+        width: 220,
+        height: 220,
+        borderRadius: 110,
         backgroundColor: 'rgba(255,255,255,0.15)',
     },
     glowEffect2: {
