@@ -301,7 +301,7 @@ const styles = StyleSheet.create({
   },
   logoContainer: {
     alignItems: 'center',
-    marginBottom: 40,
+    marginBottom: 20,
   },
   logoCircle: {
     width: 220,
@@ -318,7 +318,7 @@ const styles = StyleSheet.create({
   },
   headerContent: {
     alignItems: 'flex-start',
-    marginBottom: 32,
+    marginBottom: 10,
   },
   welcomeText: {
     fontFamily: Fonts.Inter?.boldHeading || 'System',
@@ -326,16 +326,21 @@ const styles = StyleSheet.create({
     color: '#4A3F35',
     fontWeight: 'bold',
     marginBottom: 8,
-    letterSpacing: 0.3,
+    letterSpacing: 0.5,
+    width: '100%',
+    textAlign: 'left',
   },
   subWelcomeText: {
     fontFamily: Fonts.Inter?.regular || 'System',
-    fontSize: 14,
+    fontSize: 16,
     color: '#9B8B7E',
-    letterSpacing: 0.2,
+    letterSpacing: 0.5,
+    width: '100%',
+    textAlign: 'left',
   },
   formContainer: {
     flex: 1,
+
   },
   inputContainer: {
     marginBottom: 18,
