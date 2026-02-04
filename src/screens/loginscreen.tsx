@@ -11,84 +11,59 @@ import {
   Platform,
   Dimensions,
   Image,
-  Modal,
+  Alert,
 } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import LinearGradient from 'react-native-linear-gradient';
 import { Colors } from '../theme/colors';
 import { Fonts } from '../theme/fonts';
 import { useNavigation } from '@react-navigation/native';
-import { useProfile } from '../context/ProfileContext';
-import AsyncStorage from '@react-native-async-storage/async-storage';
-import PNGLogo from '../assets/icons/png.png';
-import Icon from 'react-native-vector-icons/Ionicons';
+// SVG transformer issues causing crash. Using PNG directly as the SVG was just a wrapper.
+// import PNGLOGO from '../assets/icons/PNGLOGO.svg';
 
-const { width, height } = Dimensions.get('window');
+const {height} = Dimensions.get('window');
 
 const LoginScreen = () => {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [rememberMe, setRememberMe] = useState(false);
-  const [agreedToTerms, setAgreedToTerms] = useState(false);
-  const [emailFocused, setEmailFocused] = useState(false);
-  const [passwordFocused, setPasswordFocused] = useState(false);
-  const [showPassword, setShowPassword] = useState(false);
-  const [showForgotPasswordModal, setShowForgotPasswordModal] = useState(false);
-  const [resetEmail, setResetEmail] = useState('');
-  const [showToast, setShowToast] = useState(false);
-  const navigation = useNavigation<any>();
+  const [termsAccepted, setTermsAccepted] = useState(false);
+  
+  // Validation State
+  const [emailError, setEmailError] = useState(false);
+  const [passwordError, setPasswordError] = useState(false);
+  const [termsError, setTermsError] = useState(false);
 
-  const { profile } = useProfile();
+  const navigation = useNavigation();
 
-  // Load saved credentials on mount
-  useEffect(() => {
-    loadSavedCredentials();
-  }, []);
+  const handleLogin = () => {
+      let hasError = false;
 
-  const loadSavedCredentials = async () => {
-    try {
-      const savedEmail = await AsyncStorage.getItem('@saved_email');
-      const savedPassword = await AsyncStorage.getItem('@saved_password');
-      const wasRemembered = await AsyncStorage.getItem('@remember_me');
-
-      if (wasRemembered === 'true' && savedEmail && savedPassword) {
-        setEmail(savedEmail);
-        setPassword(savedPassword);
-        setRememberMe(true);
+      if (!email.trim()) {
+          setEmailError(true);
+          hasError = true;
       }
-    } catch (error) {
-      console.error('Error loading saved credentials:', error);
-    }
-  };
-
-  const handleLogin = async () => {
-    // Save credentials if remember me is checked
-    try {
-      if (rememberMe) {
-        await AsyncStorage.setItem('@saved_email', email);
-        await AsyncStorage.setItem('@saved_password', password);
-        await AsyncStorage.setItem('@remember_me', 'true');
-      } else {
-        await AsyncStorage.removeItem('@saved_email');
-        await AsyncStorage.removeItem('@saved_password');
-        await AsyncStorage.removeItem('@remember_me');
+      if (!password.trim()) {
+          setPasswordError(true);
+          hasError = true;
       }
-    } catch (error) {
-      console.error('Error saving credentials:', error);
-    }
+      if (!termsAccepted) {
+          setTermsError(true);
+          hasError = true;
+      }
 
-    // Navigate based on whether profile exists
-    if (profile) {
-      navigation.reset({
-        index: 0,
-        routes: [{ name: 'HomeScreen' }],
-      });
-    } else {
-      navigation.reset({
-        index: 0,
-        routes: [{ name: 'CreateProfileScreen' }],
-      });
-    }
+      if (hasError) {
+          // Clear errors after 2 seconds
+          setTimeout(() => {
+              setEmailError(false);
+              setPasswordError(false);
+              setTermsError(false);
+          }, 2000);
+          return;
+      }
+      
+      // Proceed with login logic here (e.g., API call)
+      Alert.alert('Success', 'Logged in successfully!');
   };
 
   return (
@@ -110,111 +85,91 @@ const LoginScreen = () => {
           <ScrollView
             showsVerticalScrollIndicator={false}
             contentContainerStyle={styles.scrollContent}>
+            
+            {/* Header Content Removed */}
+            <View style={styles.logoSpacer} />
 
-            {/* Logo Section */}
-            <View style={styles.logoContainer}>
-              <View style={styles.logoCircle}>
-                <Image source={PNGLogo} style={{ width: 180, height: 120 }} resizeMode="contain" />
-              </View>
-            </View>
-
-            {/* Headers */}
-            <View style={styles.headerContent}>
-              <Text style={styles.welcomeText}>Welcome to PNG-Fleet APP</Text>
-              <Text style={styles.subWelcomeText}>Enter your email and password to Login</Text>
-            </View>
-
-            {/* Form */}
-            <View style={styles.formContainer}>
+            {/* Login Form Card */}
+            <View style={styles.formCard}>
+   
+              <Text style={styles.loginTitle}>Login</Text>
+              
+  
+             
 
               <View style={styles.inputContainer}>
-                <View style={styles.inputWrapper}>
-                  <Icon name="mail-outline" size={20} color="#9B8B7E" style={styles.inputIcon} />
-                  <TextInput
-                    style={[styles.input, emailFocused && styles.inputFocused]}
-                    placeholder="Email"
-                    placeholderTextColor="#9B8B7E"
-                    value={email}
-                    onChangeText={setEmail}
-                    keyboardType="email-address"
-                    autoCapitalize="none"
-                    onFocus={() => setEmailFocused(true)}
-                    onBlur={() => setEmailFocused(false)}
-                  />
-                </View>
+                <TextInput
+                  style={[styles.input, emailError ? styles.inputError : undefined]}
+                  placeholder="Email"
+                  placeholderTextColor={Colors.text.muted}
+                  value={email}
+                  onChangeText={(text) => {
+                      setEmail(text);
+                      if (emailError) setEmailError(false);
+                  }}
+                  keyboardType="email-address"
+                  autoCapitalize="none"
+                />
               </View>
 
               <View style={styles.inputContainer}>
-                <View style={styles.inputWrapper}>
-                  <Icon name="lock-closed-outline" size={20} color="#9B8B7E" style={styles.inputIcon} />
-                  <TextInput
-                    style={[styles.input, passwordFocused && styles.inputFocused]}
-                    placeholder="Password"
-                    placeholderTextColor="#9B8B7E"
-                    value={password}
-                    onChangeText={setPassword}
-                    secureTextEntry={!showPassword}
-                    onFocus={() => setPasswordFocused(true)}
-                    onBlur={() => setPasswordFocused(false)}
-                  />
-                  <TouchableOpacity
-                    style={styles.eyeIcon}
-                    onPress={() => setShowPassword(!showPassword)}
-                  >
-                    <Icon
-                      name={showPassword ? "eye-outline" : "eye-off-outline"}
-                      size={20}
-                      color="#9B8B7E"
-                    />
+                <TextInput
+                  style={[styles.input, passwordError ? styles.inputError : undefined]}
+                  placeholder="Password"
+                  placeholderTextColor={Colors.text.muted}
+                  value={password}
+                  onChangeText={(text) => {
+                      setPassword(text);
+                      if (passwordError) setPasswordError(false);
+                  }}
+                  secureTextEntry
+                />
+              </View>
+
+               <View style={styles.optionsContainer}>
+                   <TouchableOpacity onPress={() => setRememberMe(!rememberMe)} activeOpacity={1} style={styles.rememberRow}>
+                         <View style={[styles.checkbox, rememberMe && styles.checkboxChecked]}>
+                             {rememberMe && <Text style={styles.checkboxLabel}>✓</Text>}
+                         </View>
+                         <Text style={styles.optionText}>Remember me</Text>
+                     </TouchableOpacity>
+
+                  <TouchableOpacity style={styles.forgotPasswordContainer} onPress={() => navigation.navigate('ForgotPasswordScreen' as never)}>
+                    <Text style={styles.forgotPasswordText}>Forgot Password</Text>
                   </TouchableOpacity>
-                </View>
               </View>
 
-              {/* Row 1: Remember Me & Forgot Password */}
-              <View style={styles.rowSpaceBetween}>
-                <TouchableOpacity
-                  style={styles.checkboxRow}
-                  onPress={() => setRememberMe(!rememberMe)}
-                  activeOpacity={0.8}
-                >
-                  <View style={[styles.checkbox, rememberMe && styles.checkboxChecked]}>
-                    {rememberMe && <Icon name="checkmark" size={12} color="#fff" />}
-                  </View>
-                  <Text style={styles.checkboxLabel}>Remember me</Text>
-                </TouchableOpacity>
-
-                <TouchableOpacity onPress={() => setShowForgotPasswordModal(true)}>
-                  <Text style={styles.forgotPasswordText}>Forgot Password?</Text>
-                </TouchableOpacity>
+              <View style={styles.checkboxContainer}>
+                  <TouchableOpacity 
+                    style={{flexDirection: 'row', alignItems: 'center'}} 
+                    activeOpacity={1}
+                    onPress={() => {
+                        setTermsAccepted(!termsAccepted);
+                        if (termsError) setTermsError(false);
+                    }}
+                  >
+                      <View style={[
+                          styles.checkbox, 
+                          termsAccepted ? styles.checkboxChecked : undefined,
+                          termsError ? styles.checkboxError : undefined // Apply error style
+                      ]}>
+                          {termsAccepted ? <Text style={styles.checkboxLabel}>✓</Text> : null}
+                      </View>
+                      <Text style={[styles.optionText, termsError ? {color: Colors.splash.Lightred} : undefined]}>I agree to </Text>
+                  </TouchableOpacity>
+                  <TouchableOpacity onPress={() => Alert.alert('Terms & Conditions', 'Here are the terms...')}>
+                      <Text style={styles.linkText}>Terms & Conditions</Text>
+                  </TouchableOpacity>
               </View>
 
-              {/* Row 2: Terms */}
-              <TouchableOpacity
-                style={styles.termsRow}
-                onPress={() => setAgreedToTerms(!agreedToTerms)}
-                activeOpacity={0.8}
-              >
-                <View style={[styles.checkbox, agreedToTerms && styles.checkboxChecked]}>
-                  {agreedToTerms && <Icon name="checkmark" size={12} color="#fff" />}
-                </View>
-                <View style={styles.termsTextContainer}>
-                  <Text style={styles.checkboxLabel}>I agree to the </Text>
-                  <Text style={styles.termsLink}>Terms & Conditions</Text>
-                </View>
-              </TouchableOpacity>
-
-
-              <TouchableOpacity
-                style={[
-                  styles.loginButton,
-                  (!email || !password || !agreedToTerms) && styles.loginButtonDisabled
-                ]}
-                onPress={handleLogin}
-                disabled={!email || !password || !agreedToTerms}
-              >
+              <TouchableOpacity style={styles.loginButton} onPress={handleLogin}>
                 <Text style={styles.loginButtonText}>Login</Text>
               </TouchableOpacity>
 
+              
+              {/* Social Buttons */}
+             
+              
             </View>
           </ScrollView>
         </KeyboardAvoidingView>
@@ -285,10 +240,28 @@ const LoginScreen = () => {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: '#f9f4ea',
+    backgroundColor: Colors.splash.Lightred, // Using dominant color from logo
   },
   gradient: {
     flex: 1,
+  },
+  headerBackground: {
+    position: 'absolute',
+    top: 0,
+    left: 0,
+    right: 0,
+    height: height * 0.4,
+    backgroundColor: Colors.splash.Lightred,
+  },
+  leafDecoration: {
+    // Styling to mimic the leaf shape if using pure CSS, or just a place for an image
+    width: 200,
+    height: 200,
+    borderRadius: 100,
+    backgroundColor: 'rgba(255,255,255,0.1)', // Subtle overlay
+    position: 'absolute',
+    top: -50,
+    left: -50,
   },
   keyboardAvoidingView: {
     flex: 1,
@@ -332,10 +305,38 @@ const styles = StyleSheet.create({
   },
   subWelcomeText: {
     fontFamily: Fonts.Inter?.regular || 'System',
-    fontSize: 16,
-    color: '#9B8B7E',
-    letterSpacing: 0.5,
-    width: '100%',
+    fontSize: 18,
+    color: Colors.text.light,
+    marginTop: 5,
+    opacity: 0.9,
+  },
+  formCard: {
+    backgroundColor: Colors.ui.cardBackground, // White/Card color
+    borderTopLeftRadius: 40,
+    borderTopRightRadius: 40,
+    paddingHorizontal: 30,
+    paddingTop: 50,
+    paddingBottom: 30,
+    minHeight: height * 0.65,
+    // Shadow for elevation
+    shadowColor: "#000",
+    shadowOffset: {
+      width: 0,
+      height: -2,
+    },
+    shadowOpacity: 0.1,
+    shadowRadius: 10,
+    elevation: 20,
+  },
+  logoContainer: {
+    alignItems: 'flex-start',
+    marginBottom: 10,
+  },
+  loginTitle: {
+    fontFamily: Fonts.Inter?.boldHeading || 'System',
+    fontSize: 32,
+    color: '#000000',
+    marginBottom: 30,
     textAlign: 'left',
   },
   formContainer: {
@@ -380,69 +381,82 @@ const styles = StyleSheet.create({
     shadowRadius: 8,
     elevation: 2,
   },
-  inputFocused: {
-    borderColor: '#C62829',
-    borderWidth: 2,
-    shadowColor: '#C62829',
-    shadowOffset: { width: 0, height: 4 },
-    shadowOpacity: 0.3,
-    shadowRadius: 12,
-    elevation: 6,
+  inputError: {
+      borderWidth: 1,
+      borderColor: Colors.splash.Lightred,
   },
-  rowSpaceBetween: {
-    flexDirection: 'row',
-    justifyContent: 'space-between',
-    alignItems: 'center',
-    marginBottom: 18,
+  optionsContainer: {
+      flexDirection: 'row',
+      justifyContent: 'space-between',
+      alignItems: 'center',
+      marginBottom: 20,
   },
-  checkboxRow: {
-    flexDirection: 'row',
-    alignItems: 'center',
-  },
-  termsRow: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    marginBottom: 32,
+  checkboxContainer: {
+      flexDirection: 'row',
+      alignItems: 'center',
+      marginBottom: 10,
   },
   checkbox: {
-    width: 20,
-    height: 20,
-    backgroundColor: '#FFF8ED',
-    borderRadius: 5,
-    marginRight: 10,
-    justifyContent: 'center',
-    alignItems: 'center',
-    borderWidth: 1.5,
-    borderColor: '#E8C9B3',
+      width: 20,
+      height: 20,
+      borderWidth: 1,
+      borderColor: Colors.ui.borderLight || '#E0E0E0',
+      borderRadius: 5,
+      marginRight: 10,
+      justifyContent: 'center',
+      alignItems: 'center',
   },
   checkboxChecked: {
-    backgroundColor: '#C62829',
-    borderColor: '#C62829',
+      backgroundColor: Colors.splash.Lightred,
+      borderColor: Colors.splash.Lightred,
+  },
+  checkboxError: {
+      borderWidth: 1,
+      borderColor: Colors.splash.Lightred,
+      backgroundColor: '#FFEBEE', // Light red background
   },
   checkboxLabel: {
-    fontSize: 13,
-    color: '#6B5F52',
-    fontFamily: Fonts.Inter?.regular || 'System',
+      color: '#fff',
+      fontSize: 12,
+      fontWeight: 'bold',
+  },
+  optionText: {
+      color: Colors.text.secondary,
+      fontSize: 14,
+      fontFamily: Fonts.Inter?.regular || 'System',
+  },
+  logoSpacer: {
+    height: 100,
+  },
+  logoImage: {
+    width: 120, 
+    height: 60, 
+    resizeMode: 'contain',
+  },
+  rememberRow: {
+    flexDirection: 'row', 
+    alignItems: 'center',
+  },
+  linkText: {
+      color: Colors.splash.Lightred,
+      fontSize: 14,
+      fontFamily: Fonts.Inter?.boldHeading || 'System',
+      fontWeight: 'bold',
+      textDecorationLine: 'underline',
+  },
+  forgotPasswordContainer: {
+    // Moved styles to be inline with options or adjust here
   },
   forgotPasswordText: {
-    color: '#C62829',
-    fontSize: 13,
-    fontWeight: '600',
-    fontFamily: Fonts.Inter?.medium || 'System',
-  },
-  termsTextContainer: {
-    flexDirection: 'row',
-  },
-  termsLink: {
-    color: '#C62829',
-    fontSize: 13,
-    fontWeight: 'bold',
-    fontFamily: Fonts.Inter?.medium || 'System',
+    color: Colors.splash.Lightred,
+    fontSize: 12,
+    fontFamily: Fonts.Inter?.regular || 'System',
+    fontWeight: '500',
   },
   loginButton: {
-    backgroundColor: '#C62829',
-    borderRadius: 18,
-    paddingVertical: 18,
+    backgroundColor: Colors.splash.Lightred,
+    borderRadius: 25,
+    paddingVertical: 16,
     alignItems: 'center',
     shadowColor: '#C62829',
     shadowOffset: { width: 0, height: 8 },
@@ -543,9 +557,23 @@ const styles = StyleSheet.create({
     shadowOpacity: 0.1,
     elevation: 2,
   },
-  sendLinkButtonText: {
-    color: '#FFFFFF',
-    fontSize: 16,
+  socialText: {
+      fontSize: 20,
+      fontWeight: 'bold',
+  },
+  signupContainer: {
+    flexDirection: 'row',
+    justifyContent: 'center',
+    marginTop: 20,
+  },
+  signupText: {
+    color: Colors.text.secondary,
+    fontSize: 14,
+    fontFamily: Fonts.Inter?.regular || 'System',
+  },
+  signupLink: {
+    color: Colors.splash.Lightred,
+    fontSize: 14,
     fontWeight: 'bold',
     fontFamily: Fonts.Inter?.boldHeading || 'System',
     letterSpacing: 0.5,

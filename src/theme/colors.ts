@@ -4,6 +4,7 @@ export const Colors = {
     accent: '#f9f4ea',
     gradientEnd: '#DBC9A6',
     lighter: '#e8c9b3',
+    dominant: '#a65e36', // From SVG logo inspection
 
   },
   splash: {

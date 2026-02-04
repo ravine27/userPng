@@ -2,12 +2,20 @@ import React from 'react';
 import { NavigationContainer } from '@react-navigation/native';
 import { createNativeStackNavigator } from '@react-navigation/native-stack';
 import LoginScreen from '../screens/loginscreen';
-import CreateProfileScreen from '../screens/CreateProfileScreen/CreateProfileScreen';
+
+
+import VerificationScreen from '../screens/VerificationScreen';
+
+import ProfileSetupScreen from '../screens/ProfileSetupScreen';
 import HomeScreen from '../screens/HomeScreen/HomeScreen';
 
 export type RootStackParamList = {
   LoginScreen: undefined;
-  CreateProfileScreen: undefined;
+
+
+  VerificationScreen: undefined;
+
+  ProfileSetupScreen: undefined;
   HomeScreen: undefined;
 };
 
@@ -17,12 +25,16 @@ export default function RootNavigator() {
   return (
     <NavigationContainer>
       <Stack.Navigator
-        initialRouteName="LoginScreen"
+        initialRouteName="HomeScreen"
         screenOptions={{
           headerShown: false,
         }}>
         <Stack.Screen name="LoginScreen" component={LoginScreen} />
-        <Stack.Screen name="CreateProfileScreen" component={CreateProfileScreen} />
+
+
+        <Stack.Screen name="VerificationScreen" component={VerificationScreen} />
+
+        <Stack.Screen name="ProfileSetupScreen" component={ProfileSetupScreen} />
         <Stack.Screen name="HomeScreen" component={HomeScreen} />
       </Stack.Navigator>
     </NavigationContainer>
